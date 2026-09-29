@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MarketGap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16262b;--paper:#f6f8f7;--line:#d5dedb;--teal:#0e6e6e;--amber:#c9821a;--err:#b3261e;--muted:#5d6f72}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+main{max-width:1000px;margin:0 auto;padding:40px 20px 80px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px}
+@media(max-width:800px){main{grid-template-columns:1fr;gap:32px}}
+h1{font:700 44px/1.05 "Bricolage Grotesque",sans-serif;margin:0 0 12px;letter-spacing:-.02em}
+h1 span{color:var(--teal)}
+.lede{color:var(--muted);margin:0 0 28px;max-width:44ch}
+label{display:block;font-weight:500;margin:18px 0 6px}
+.hint{font-size:14px;color:var(--muted);margin:4px 0 0}
+input[type=text],input[type=number],select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:6px;background:#fff;font:inherit;color:inherit}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
+.err{color:var(--err);font-size:14px;min-height:20px;margin:4px 0 0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.demo{display:flex;align-items:center;gap:8px;margin-top:18px;font-weight:400}
+.demo input{width:auto}
+button{margin-top:24px;width:100%;padding:13px;border:0;border-radius:6px;background:var(--teal);color:#fff;font:500 16px "IBM Plex Sans",sans-serif;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+aside{border-left:3px solid var(--amber);padding-left:24px;align-self:start}
+aside h2{font:700 20px "Bricolage Grotesque",sans-serif;margin:0 0 8px}
+#status{color:var(--muted)}
+.stat{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:8px 0}
+.stat b{font-weight:500}
+pre{background:#fff;border:1px solid var(--line);border-radius:6px;padding:12px;font-size:12px;overflow:auto;max-height:260px}
+@media(prefers-reduced-motion:no-preference){button{transition:opacity .2s}}
+</style>
+</head>
+<body>
+<main>
+
+  <!-- SECTION 1: the form -->
+  <section>
+    <h1>Find the <span>gap</span> before you build.</h1>
+    <p class="lede">Enter a product idea. MarketGap reads the live market and shows where customers are unhappy and competitors are quiet.</p>
+
+    <form id="f" novalidate>
+      <label for="product">Product</label>
+      <input id="product" type="text" maxlength="80" placeholder="e.g. laptop stand">
+      <p class="hint">Be specific. "laptop stand" works better than "accessories".</p>
+      <p class="err" id="e-product"></p>
+
+      <div class="row">
+        <div>
+          <label for="market">Market</label>
+          <select id="market">
+            <option>India</option>
+            <option>United States</option>
+          </select>
+        </div>
+        <div>
+          <label for="price">Target price (optional)</label>
+          <input id="price" type="number" min="1" step="any" placeholder="1500">
+          <p class="err" id="e-price"></p>
+        </div>
+      </div>
+
+      <label class="demo"><input id="demo" type="checkbox"> Use saved demo data (no API credits)</label>
+      <button id="go" type="submit">Analyze market</button>
+      <p class="err" id="e-form"></p>
+    </form>
+  </section>
+
+  <!-- SECTION 2: status and result summary -->
+  <aside>
+    <h2>Result</h2>
+    <p id="status">Nothing analyzed yet.</p>
+    <div id="summary"></div>
+    <pre id="raw" hidden></pre>
+  </aside>
+
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+
+// SECTION 3: client-side validation (fast feedback, saves a round trip)
+function validate(){
+  let ok = true;
+  $('e-product').textContent = ''; $('e-price').textContent = ''; $('e-form').textContent = '';
+  const product = $('product').value.replace(/\s+/g,' ').trim();
+  const price = $('price').value;
+  if (product.length < 2){ $('e-product').textContent = 'Enter a product with at least 2 characters.'; ok = false; }
+  if (price !== '' && !(Number(price) > 0)){ $('e-price').textContent = 'Enter a price above 0, or leave it empty.'; ok = false; }
+  return ok ? { product, market: $('market').value,
+                target_price: price === '' ? null : Number(price),
+                demo_mode: $('demo').checked } : null;
+}
+
+// SECTION 4: loading state (analysis can take 15-40 s with live data)
+function setLoading(on){
+  $('go').disabled = on;
+  $('go').textContent = on ? 'Collecting market data...' : 'Analyze market';
+  if (on) $('status').textContent = 'Working. Live analysis can take up to 40 seconds.';
+}
+
+// SECTION 5: submit -> backend -> render
+$('f').addEventListener('submit', async e => {
+  e.preventDefault();
+  const body = validate();
+  if (!body) return;
+  setLoading(true);
+  try {
+    const res = await fetch('/api/analyze', {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(readError(data));
+    render(data);
+  } catch (err){
+    $('e-form').textContent = err.message;
+    $('status').textContent = 'The analysis did not finish.';
+  } finally { setLoading(false); }
+});
+
+// SECTION 6: turn FastAPI errors (string or 422 list) into one readable message
+function readError(d){
+  if (typeof d.detail === 'string') return d.detail;
+  if (Array.isArray(d.detail)) return d.detail.map(x => x.msg).join('. ');
+  return 'Something went wrong. Try again.';
+}
+
+// SECTION 7: show that the contract arrived intact
+function render(d){
+  if (!d.products || d.products.length === 0){
+    $('status').textContent = 'No market data found. Try a broader product name.';
+    $('summary').innerHTML = ''; $('raw').hidden = true; return;
+  }
+  $('status').textContent = `Analysis for "${d.query.product}" in ${d.query.market}`;
+  const rows = [['Competitor products', d.products.length], ['Pain points', (d.pain_points||[]).length],
+                ['Opportunities', (d.opportunities||[]).length]];
+  $('summary').innerHTML = rows.map(r => `<div class="stat"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('');
+  $('raw').hidden = false; $('raw').textContent = JSON.stringify(d, null, 2);
+}
+</script>
+</body>
+</html>
