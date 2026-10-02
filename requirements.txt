@@ -3,4 +3,5 @@ uvicorn==0.30.6
 pydantic>=2.12
 serpapi>=1.0
 python-dotenv>=1.0
+google-genai>=1.0.0
 pandas>=2.0
