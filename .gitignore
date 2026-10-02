@@ -2,3 +2,13 @@ venv/
 __pycache__/
 *.pyc
 .env
+
+# SerpApi cache - don't share via git, share manually with teammate
+data/*.db
+
+# Test artifacts (caused permission issues earlier)
+.pytest_cache/
+
+# OS/editor noise
+.vscode/
+*.log
