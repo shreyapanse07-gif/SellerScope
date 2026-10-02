@@ -1,7 +1,7 @@
 """MarketGap - Stage 1: seller input layer (Person B).
 
 Run:  pip install -r requirements.txt
-      uvicorn main:app --reload
+      uvicorn app.main:app --reload
 Open: http://127.0.0.1:8000
 """
 import json
@@ -95,4 +95,4 @@ def analyze(req: AnalyzeRequest):
 
 @app.get("/")
 def home():
-    return FileResponse(BASE / "index.html")
+    return FileResponse(BASE / "static" / "index.html")
