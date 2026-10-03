@@ -56,6 +56,7 @@ def compute_opportunity_scores(
                 "evidence_strength": theme["evidence_strength"],
                 "example_snippet": theme["example_snippet"],
                 "source_index": theme["source_index"],
+                "addressing_features": theme.get("addressing_features", []),
             }
         )
 

@@ -41,6 +41,18 @@ def test_empty_addressing_features_have_zero_coverage():
     )
 
     assert result[0]["coverage_score"] == 0.0
+    assert result[0]["addressing_features"] == []
+
+
+def test_scored_opportunity_preserves_addressing_features():
+    result = compute_opportunity_scores(
+        [_theme("battery life", 3, ["long_battery", "fast_charging"])], {}
+    )
+
+    assert result[0]["addressing_features"] == [
+        "long_battery",
+        "fast_charging",
+    ]
 
 
 def test_unknown_feature_has_zero_coverage():

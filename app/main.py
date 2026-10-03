@@ -13,8 +13,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field, field_validator
 
-app = FastAPI(title="MarketGap")
+app = FastAPI(title="SellerScope")
 BASE = Path(__file__).parent
+# In-memory single-analysis storage — hackathon scope only, not safe for multiple concurrent users.
+_last_analysis: dict | None = None
 
 # ---------- Part 1: the markets we support -> SerpApi parameters ----------
 MARKETS = {
@@ -38,6 +40,10 @@ class AnalyzeRequest(BaseModel):
         if len(v) < 2:
             raise ValueError("Enter at least 2 characters for the product")
         return v
+
+
+class TestProductRequest(BaseModel):
+    features: list[str]
 
 
 # ---------- Part 3: turn raw input into a clean context for the pipeline ----------
@@ -66,23 +72,40 @@ def run_analysis(ctx: dict) -> dict:
 
 
 def load_demo_cache(product: str) -> dict:
-    f = BASE / "demo_cache.json"          # Person A drops the frozen demo data here
+    f = BASE.parent / "data" / "demo_cache.json"
     if f.exists():
         return json.loads(f.read_text(encoding="utf-8"))
-    return run_analysis(build_context(AnalyzeRequest(product=product)))
+    raise HTTPException(
+        503,
+        "Demo data not available yet — run a live analysis or add data/demo_cache.json",
+    )
 
 
 # ---------- Part 5: the endpoints ----------
 @app.post("/api/analyze")
 def analyze(req: AnalyzeRequest):
+    global _last_analysis
     if req.demo_mode:
-        return load_demo_cache(req.product)
-    try:
-        return run_analysis(build_context(req))
-    except HTTPException:
-        raise
-    except Exception as e:                      # SerpApi down, credits gone, etc.
-        raise HTTPException(status_code=502, detail=f"Analysis failed: {e}")
+        result = load_demo_cache(req.product)
+    else:
+        try:
+            result = run_analysis(build_context(req))
+        except HTTPException:
+            raise
+        except Exception as e:                      # SerpApi down, credits gone, etc.
+            raise HTTPException(status_code=502, detail=f"Analysis failed: {e}")
+    _last_analysis = result
+    return result
+
+
+@app.post("/api/test-product")
+def test_product(body: TestProductRequest):
+    if _last_analysis is None:
+        raise HTTPException(400, "Run a market analysis first.")
+    known_features = list(_last_analysis["features"].keys())
+    opportunities = _last_analysis["opportunities"]
+    from app.scoring.test_product import match_product
+    return match_product(body.features, known_features, opportunities)
 
 
 @app.get("/")
