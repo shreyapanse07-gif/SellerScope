@@ -3,6 +3,7 @@
 import json
 import logging
 import os
+import time
 from typing import Literal
 
 from dotenv import load_dotenv
@@ -78,15 +79,15 @@ def _prompt_for_snippets(
 
 def _request_pain_themes(prompt_text: str) -> str:
     client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-    interaction = client.interactions.create(
+    response = client.models.generate_content(
         model=os.getenv("GEMINI_MODEL", "models/gemini-flash-latest"),
-        input=prompt_text,
-        generation_config={
+        contents=prompt_text,
+        config={
+            "response_mime_type": "application/json",
             "max_output_tokens": 4096,
-            "thinking_level": "low",
         },
     )
-    return interaction.output_text
+    return response.text
 
 
 def extract_pain_themes(
@@ -102,7 +103,7 @@ def extract_pain_themes(
         "nothing else."
     )
 
-    for attempt in range(2):
+    for attempt in range(3):
         prompt = prompt_text if attempt == 0 else prompt_text + retry_note
         try:
             result_text = _request_pain_themes(prompt)
@@ -111,10 +112,23 @@ def extract_pain_themes(
                 parsed, context={"known_features": known_features}
             )
             return [theme.model_dump() for theme in validated.themes]
-        except (json.JSONDecodeError, ValidationError, TypeError, ValueError):
-            if attempt == 0:
+        except Exception as error:
+            status_code = getattr(error, "status_code", getattr(error, "code", None))
+            if status_code == 503 and attempt < 2:
+                delay = 2**attempt
+                print(
+                    f"Retry {attempt + 1}/3 after 503 error, waiting {delay}s..."
+                )
+                time.sleep(delay)
                 continue
-            logger.warning("Pain theme extraction returned invalid output twice.")
+            if isinstance(
+                error, (json.JSONDecodeError, ValidationError, TypeError, ValueError)
+            ):
+                if attempt == 0:
+                    continue
+                logger.warning("Pain theme extraction returned invalid output twice.")
+                break
+            raise
 
     return []
 

@@ -6,14 +6,14 @@ from app.demand import pain
 def _mock_client(monkeypatch, responses):
     calls = []
 
-    class MockInteractions:
-        def create(self, **kwargs):
+    class MockModels:
+        def generate_content(self, **kwargs):
             calls.append(kwargs)
-            return SimpleNamespace(output_text=responses.pop(0))
+            return SimpleNamespace(text=responses.pop(0))
 
     class MockClient:
         def __init__(self, api_key):
-            self.interactions = MockInteractions()
+            self.models = MockModels()
 
     monkeypatch.setattr(pain.genai, "Client", MockClient)
     monkeypatch.setenv("GEMINI_API_KEY", "test-key")
@@ -41,10 +41,11 @@ def test_extract_pain_themes_batches_snippets_and_labels_evidence(monkeypatch):
 
     assert [theme["evidence_strength"] for theme in labeled] == ["low", "moderate"]
     assert len(calls) == 1
-    assert "1. Battery drains during calls" in calls[0]["input"]
-    assert "2. Battery dies during calls" in calls[0]["input"]
-    assert "long_battery" in calls[0]["input"]
-    assert "Only return themes specific to this exact product type" in calls[0]["input"]
+    assert "1. Battery drains during calls" in calls[0]["contents"]
+    assert "2. Battery dies during calls" in calls[0]["contents"]
+    assert "long_battery" in calls[0]["contents"]
+    assert "Only return themes specific to this exact product type" in calls[0]["contents"]
+    assert calls[0]["config"]["response_mime_type"] == "application/json"
 
 
 def test_extract_pain_themes_retries_invalid_json(monkeypatch):
@@ -55,8 +56,8 @@ def test_extract_pain_themes_retries_invalid_json(monkeypatch):
 
     assert pain.extract_pain_themes(["Snippet"], ["wireless"]) == []
     assert len(calls) == 2
-    assert calls[1]["input"].startswith(calls[0]["input"])
-    assert "Return ONLY the JSON object" in calls[1]["input"]
+    assert calls[1]["contents"].startswith(calls[0]["contents"])
+    assert "Return ONLY the JSON object" in calls[1]["contents"]
 
 
 def test_extract_pain_themes_returns_empty_after_two_invalid_responses(

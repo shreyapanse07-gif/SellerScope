@@ -82,3 +82,30 @@ def test_live_cache_miss_calls_once_then_uses_cache(cache_db, monkeypatch):
             (client._cache_key(params),),
         ).fetchone()
     assert json.loads(stored[0]) == expected
+
+
+def test_live_response_object_is_converted_to_plain_dict(cache_db, monkeypatch):
+    params = {"engine": "google", "q": "desk"}
+    expected = {"organic_results": [{"title": "Live result"}]}
+
+    class MockSerpResults:
+        def as_dict(self):
+            return expected
+
+    class MockClient:
+        def __init__(self, api_key):
+            pass
+
+        def search(self, received_params):
+            return MockSerpResults()
+
+    monkeypatch.setattr(client, "Client", MockClient)
+    monkeypatch.setenv("LIVE", "true")
+    monkeypatch.setenv("SERPAPI_KEY", "test-api-key")
+
+    result = client.search(params)
+
+    assert type(result) is dict
+    assert result == expected
+    assert type(result["organic_results"]) is list
+    assert client.search(params) == expected

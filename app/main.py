@@ -53,24 +53,16 @@ def build_context(req: AnalyzeRequest) -> dict:
     }
 
 
-# ---------- Part 4: stub of Person A's pipeline (same shape as contract.md) ----------
+# ---------- Part 4: analysis pipeline ----------
 def run_analysis(ctx: dict) -> dict:
-    """Replace this import with: from pipeline import run_analysis"""
-    return {
-        "query": {"product": ctx["product"], "market": ctx["market"], "target_price": ctx["target_price"]},
-        "products": [
-            {"title": "Foldable Aluminium Laptop Stand", "brand": "Portronics", "merchant": "Amazon.in",
-             "price": 1299, "rating": 4.2, "features": ["foldable", "aluminum", "adjustable"]},
-            {"title": "Adjustable Laptop Stand 360 Rotation", "brand": "Lifelong", "merchant": "Flipkart",
-             "price": 1499, "rating": 3.9, "features": ["adjustable", "360 rotation"]},
-        ],
-        "price_stats": {"min": 599, "median": 1299, "max": 2999, "buckets": []},
-        "features": [{"name": "foldable", "count": 14, "coverage_pct": 70}],
-        "pain_points": [{"theme": "Stability", "mentions": 37, "example_snippet": "wobbles at max height", "source_url": ""}],
-        "opportunities": [{"theme": "Stability", "pain_score": 0.9, "coverage_score": 0.2,
-                           "opportunity_score": 0.72, "interpretation": "Potential gap worth investigating."}],
-        "news": [],
-    }
+    """Adapt the request context to the analysis pipeline interface."""
+    from app.pipeline import run_analysis as analyze_product
+
+    return analyze_product(
+        product=ctx["product"],
+        market=ctx["market"],
+        target_price=ctx["target_price"],
+    )
 
 
 def load_demo_cache(product: str) -> dict:

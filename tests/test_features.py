@@ -6,14 +6,14 @@ from app.supply import features
 def _mock_client(monkeypatch, responses):
     calls = []
 
-    class MockInteractions:
-        def create(self, **kwargs):
+    class MockModels:
+        def generate_content(self, **kwargs):
             calls.append(kwargs)
-            return SimpleNamespace(output_text=responses.pop(0))
+            return SimpleNamespace(text=responses.pop(0))
 
     class MockClient:
         def __init__(self, api_key):
-            self.interactions = MockInteractions()
+            self.models = MockModels()
 
     monkeypatch.setattr(features.genai, "Client", MockClient)
     monkeypatch.setenv("GEMINI_API_KEY", "test-key")
@@ -35,9 +35,11 @@ def test_extract_features_valid_json_in_one_batched_call(monkeypatch):
         "Widget Long Battery": ["long_battery"],
     }
     assert len(calls) == 1
-    assert "1. Acme Wireless Headphones" in calls[0]["input"]
-    assert "2. Widget Long Battery" in calls[0]["input"]
-    assert "Return ONLY valid JSON" in calls[0]["input"]
+    assert "1. Acme Wireless Headphones" in calls[0]["contents"]
+    assert "2. Widget Long Battery" in calls[0]["contents"]
+    assert "Return ONLY valid JSON" in calls[0]["contents"]
+    assert calls[0]["config"]["response_mime_type"] == "application/json"
+    assert calls[0]["config"]["http_options"]["timeout"] == 30000
 
 
 def test_extract_features_retries_once_after_invalid_json(monkeypatch):
@@ -50,8 +52,8 @@ def test_extract_features_retries_once_after_invalid_json(monkeypatch):
         "Product": ["wireless"]
     }
     assert len(calls) == 2
-    assert calls[1]["input"].startswith(calls[0]["input"])
-    assert "Your previous response was not valid JSON" in calls[1]["input"]
+    assert calls[1]["contents"].startswith(calls[0]["contents"])
+    assert "Your previous response was not valid JSON" in calls[1]["contents"]
 
 
 def test_extract_features_returns_empty_lists_after_two_invalid_responses(

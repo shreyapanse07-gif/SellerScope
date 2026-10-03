@@ -61,10 +61,13 @@ def search(params: dict) -> dict:
             )
 
         response = Client(api_key=api_key).search(params)
-        response_json = json.dumps(response)
+        as_dict = getattr(response, "as_dict", None)
+        plain_response = as_dict() if callable(as_dict) else dict(response)
+        response_json = json.dumps(plain_response)
+        plain_response = json.loads(response_json)
         connection.execute(
             "INSERT INTO cache (key, response) VALUES (?, ?)",
             (key, response_json),
         )
         connection.commit()
-        return response
+        return plain_response
