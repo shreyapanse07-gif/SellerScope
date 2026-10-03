@@ -12,3 +12,6 @@ data/*.db
 # OS/editor noise
 .vscode/
 *.log
+
+# Manual debugging scripts
+manual_check_*.py
