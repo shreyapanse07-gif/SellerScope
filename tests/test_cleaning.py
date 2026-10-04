@@ -45,6 +45,13 @@ def test_missing_price_and_unparseable_price_are_missing():
     assert parse_price("not a price") is None
 
 
+def test_parse_price_handles_rupee_and_dollar_formats():
+    assert parse_price("₹92.0") == 92.0
+    assert parse_price("₹2,999") == 2999.0
+    assert parse_price("₹239") == 239.0
+    assert parse_price("$29.99") == 29.99
+
+
 def test_clean_products_accepts_serpapi_extracted_price_without_optional_fields():
     frame = clean_products(
         {

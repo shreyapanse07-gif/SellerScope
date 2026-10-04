@@ -28,7 +28,7 @@ def parse_price(price_str: str) -> float | None:
     """Parse a price after removing currency symbols and thousands separators."""
     if not isinstance(price_str, str):
         return None
-    normalized = re.sub(r"[^\d.\-]", "", price_str.replace(",", ""))
+    normalized = re.sub(r"[^0-9.\-]", "", price_str.replace(",", ""))
     if not normalized or normalized in {".", "-", "-."}:
         return None
     try:
