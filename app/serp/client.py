@@ -11,6 +11,8 @@ from typing import Iterator
 from dotenv import load_dotenv
 from serpapi import Client
 
+load_dotenv()
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CACHE_DB_PATH = PROJECT_ROOT / "data" / "cache.db"
 

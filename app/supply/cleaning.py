@@ -46,14 +46,19 @@ def clean_products(raw_response: dict) -> pd.DataFrame:
         if not isinstance(product, dict):
             continue
         title = product.get("title") or ""
+        price = (
+            product["extracted_price"]
+            if "extracted_price" in product
+            else parse_price(product.get("price"))
+        )
         rows.append(
             {
                 "title": title,
                 "brand": extract_brand(title),
-                "price": parse_price(product.get("price")),
+                "price": price,
                 "merchant": product.get("source") or product.get("merchant") or "",
-                "rating": product.get("rating"),
-                "reviews_count": product.get("reviews", product.get("reviews_count")),
+                "rating": product.get("rating", None),
+                "reviews_count": product.get("reviews", None),
             }
         )
     return pd.DataFrame(rows, columns=PRODUCT_COLUMNS)

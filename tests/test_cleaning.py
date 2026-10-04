@@ -45,6 +45,25 @@ def test_missing_price_and_unparseable_price_are_missing():
     assert parse_price("not a price") is None
 
 
+def test_clean_products_accepts_serpapi_extracted_price_without_optional_fields():
+    frame = clean_products(
+        {
+            "shopping_results": [
+                {
+                    "title": "Example Wireless Headphones",
+                    "extracted_price": 1499,
+                    "price": "₹1,499",
+                    "source": "Example Store",
+                }
+            ]
+        }
+    )
+
+    assert frame.loc[0, "price"] == 1499
+    assert pd.isna(frame.loc[0, "rating"])
+    assert pd.isna(frame.loc[0, "reviews_count"])
+
+
 def test_dedupe_uses_title_and_merchant():
     frame = clean_products(
         {
