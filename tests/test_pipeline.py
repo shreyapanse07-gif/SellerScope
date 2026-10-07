@@ -69,6 +69,7 @@ def test_run_analysis_assembles_contract_shape_without_api_calls(monkeypatch):
         "opportunities",
         "news",
         "why_now",
+        "trend",
     }
     assert result["query"] == {
         "product": "wireless headphones",
@@ -84,12 +85,19 @@ def test_run_analysis_assembles_contract_shape_without_api_calls(monkeypatch):
     assert result["opportunities"][0]["coverage_score"] == 1.0
     assert result["news"] == []
     assert result["why_now"] is None
+    assert result["trend"]["direction"] == "stable"
 
-    assert len(calls) == 2
+    assert len(calls) == 3
     assert calls[0]["engine"] == "google_shopping"
     assert calls[0]["q"] == "wireless headphones"
     assert calls[1]["engine"] == "google"
     assert '"wireless headphones" problems OR complaints OR issues' == calls[1]["q"]
+    assert calls[2] == {
+        "engine": "google_trends",
+        "q": "wireless headphones",
+        "geo": "in",
+        "data_type": "TIMESERIES",
+    }
     for params in calls:
         assert params["gl"] == "in"
         assert params["hl"] == "en"

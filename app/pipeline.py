@@ -6,7 +6,7 @@ from app.demand import pain
 from app.scoring import opportunity
 from app.scoring.why_now import build_why_now
 from app.serp import client as serp_client
-from app.supply import cleaning, features
+from app.supply import cleaning, features, trends
 from app.main import MARKETS
 
 logger = logging.getLogger(__name__)
@@ -63,6 +63,20 @@ def run_analysis(product: str, market: str, target_price: float | None) -> dict:
         )
     except Exception:
         logger.warning("Complaint search failed for %r", product, exc_info=True)
+
+    trends_response = {}
+    try:
+        trends_response = serp_client.search(
+            {
+                "engine": "google_trends",
+                "q": product,
+                "geo": market_params["gl"],
+                "data_type": "TIMESERIES",
+            }
+        )
+    except Exception:
+        logger.warning("Trends search failed for %r", product, exc_info=True)
+    trend = trends.analyze_trend(trends_response)
 
     products = []
     stats = {"min": None, "median": None, "max": None, "buckets": []}
@@ -149,4 +163,5 @@ def run_analysis(product: str, market: str, target_price: float | None) -> dict:
         "opportunities": opportunities,
         "news": news,
         "why_now": build_why_now(news, opportunities[0] if opportunities else None),
+        "trend": trend,
     }
