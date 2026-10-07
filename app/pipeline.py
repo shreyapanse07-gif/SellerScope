@@ -64,7 +64,12 @@ def run_analysis(product: str, market: str, target_price: float | None) -> dict:
     except Exception:
         logger.warning("Complaint search failed for %r", product, exc_info=True)
 
-    trends_response = {}
+    trend = {
+        "direction": "stable",
+        "change_pct": 0,
+        "data_points": [],
+        "seasonal_note": None,
+    }
     try:
         trends_response = serp_client.search(
             {
@@ -74,9 +79,12 @@ def run_analysis(product: str, market: str, target_price: float | None) -> dict:
                 "data_type": "TIMESERIES",
             }
         )
+        trend = trends.analyze_trend(trends_response)
+        trend["seasonal_note"] = trends.detect_seasonal_pattern(
+            trend["data_points"]
+        )
     except Exception:
-        logger.warning("Trends search failed for %r", product, exc_info=True)
-    trend = trends.analyze_trend(trends_response)
+        logger.warning("Trend analysis failed for %r", product, exc_info=True)
 
     products = []
     stats = {"min": None, "median": None, "max": None, "buckets": []}

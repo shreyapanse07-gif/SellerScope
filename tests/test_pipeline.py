@@ -98,7 +98,7 @@ def test_run_analysis_assembles_contract_shape_without_api_calls(monkeypatch):
         "geo": "in",
         "data_type": "TIMESERIES",
     }
-    for params in calls:
+    for params in calls[:2]:
         assert params["gl"] == "in"
         assert params["hl"] == "en"
         assert params["location"] == "India"

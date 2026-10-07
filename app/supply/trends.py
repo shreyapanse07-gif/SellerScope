@@ -80,3 +80,77 @@ def analyze_trend(trends_response: dict) -> dict:
         "change_pct": round(change_pct, 2),
         "data_points": public_points,
     }
+
+
+def detect_seasonal_pattern(data_points: list[dict]) -> str | None:
+    """Identify a recurring annual peak that is expected within about 60 days."""
+    dated_points = []
+    for point in data_points:
+        if not isinstance(point, dict) or not isinstance(point.get("date"), str):
+            continue
+        date = _point_date(point)
+        try:
+            value = float(point.get("value"))
+        except (ValueError, TypeError):
+            continue
+        if date is not None:
+            dated_points.append((date, value))
+
+    years = {date.year for date, _ in dated_points}
+    if len(years) < 2:
+        return None
+
+    overall_average = sum(value for _, value in dated_points) / len(dated_points)
+    if overall_average <= 0:
+        return None
+
+    now = datetime.now(timezone.utc)
+    # Find the actual highest observation for each year first. Use those
+    # points to test whether a peak recurs near the same calendar date.
+    yearly_peaks = []
+    for year in years:
+        observations = [(date, value) for date, value in dated_points if date.year == year]
+        yearly_peaks.append(max(observations, key=lambda item: item[1]))
+
+    best = None
+    for candidate_date, _ in yearly_peaks:
+        candidate_day = candidate_date.timetuple().tm_yday
+        matching = [
+            (date, value)
+            for date, value in yearly_peaks
+            if min(
+                abs(date.timetuple().tm_yday - candidate_day),
+                366 - abs(date.timetuple().tm_yday - candidate_day),
+            ) <= 21
+        ]
+        if len(matching) < 2:
+            continue
+        average = sum(value for _, value in matching) / len(matching)
+        if best is None or average > best[0]:
+            best = (average, candidate_date, matching)
+
+    if best is None or best[0] < overall_average * 1.25:
+        return None
+
+    _, peak_date, matching_peaks = best
+    # Print the historical observations selected as the recurring peak so
+    # the month used for the upcoming occurrence is straightforward to audit.
+    print("Seasonal peak data points:", matching_peaks)
+    month, day = peak_date.month, peak_date.day
+    try:
+        next_peak = datetime(now.year, month, day, tzinfo=timezone.utc)
+    except ValueError:  # Handle Feb 29 in a non-leap year.
+        next_peak = datetime(now.year, 2, 28, tzinfo=timezone.utc)
+    if next_peak < now:
+        try:
+            next_peak = datetime(now.year + 1, month, day, tzinfo=timezone.utc)
+        except ValueError:
+            next_peak = datetime(now.year + 1, 2, 28, tzinfo=timezone.utc)
+    if next_peak - now > timedelta(days=60):
+        return None
+
+    month_name = next_peak.strftime("%B")
+    return (
+        f"Interest has historically peaked around {month_name} — "
+        "worth planning your launch accordingly."
+    )
