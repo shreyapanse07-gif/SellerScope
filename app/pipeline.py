@@ -4,6 +4,7 @@ import logging
 
 from app.demand import pain
 from app.scoring import opportunity
+from app.scoring.why_now import build_why_now
 from app.serp import client as serp_client
 from app.supply import cleaning, features
 from app.main import MARKETS
@@ -138,6 +139,7 @@ def run_analysis(product: str, market: str, target_price: float | None) -> dict:
         logger.warning("Opportunity scoring failed for %r", product, exc_info=True)
         opportunities = []
 
+    news = []
     return {
         "query": query,
         "products": products,
@@ -145,5 +147,6 @@ def run_analysis(product: str, market: str, target_price: float | None) -> dict:
         "features": feature_rows,
         "pain_points": pain_points,
         "opportunities": opportunities,
-        "news": [],
+        "news": news,
+        "why_now": build_why_now(news, opportunities[0] if opportunities else None),
     }

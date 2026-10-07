@@ -68,6 +68,7 @@ def test_run_analysis_assembles_contract_shape_without_api_calls(monkeypatch):
         "pain_points",
         "opportunities",
         "news",
+        "why_now",
     }
     assert result["query"] == {
         "product": "wireless headphones",
@@ -82,6 +83,7 @@ def test_run_analysis_assembles_contract_shape_without_api_calls(monkeypatch):
     assert result["pain_points"][0]["source_url"] == "https://example.test/review"
     assert result["opportunities"][0]["coverage_score"] == 1.0
     assert result["news"] == []
+    assert result["why_now"] is None
 
     assert len(calls) == 2
     assert calls[0]["engine"] == "google_shopping"
