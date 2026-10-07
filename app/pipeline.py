@@ -170,6 +170,10 @@ def run_analysis(product: str, market: str, target_price: float | None) -> dict:
         "pain_points": pain_points,
         "opportunities": opportunities,
         "news": news,
-        "why_now": build_why_now(news, opportunities[0] if opportunities else None),
+        "why_now": build_why_now(
+            news,
+            opportunities[0] if opportunities else None,
+            trend.get("seasonal_note"),
+        ),
         "trend": trend,
     }

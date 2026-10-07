@@ -3,7 +3,11 @@
 from datetime import datetime, timedelta, timezone
 
 
-def build_why_now(news: list[dict], top_opportunity: dict) -> str | None:
+def build_why_now(
+    news: list[dict],
+    top_opportunity: dict,
+    seasonal_note: str | None = None,
+) -> str | None:
     signals = []
 
     now = datetime.now(timezone.utc)
@@ -31,6 +35,9 @@ def build_why_now(news: list[dict], top_opportunity: dict) -> str | None:
             f"Only {pct}% of competitors currently address "
             "the top gap — the window is still open."
         )
+
+    if seasonal_note is not None:
+        signals.append(seasonal_note)
 
     if not signals:
         return None
