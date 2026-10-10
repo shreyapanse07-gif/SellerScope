@@ -2157,26 +2157,69 @@
       areaPath += ` L${width} ${chartHeight} L0 ${chartHeight}Z`;
 
       // Update SVG paths
-      document.getElementById('chart-area-path').setAttribute('d', areaPath);
-      document.getElementById('chart-line-path').setAttribute('d', linePath);
+      const areaPathEl = document.getElementById('chart-area-path');
+      const linePathEl = document.getElementById('chart-line-path');
+      if (areaPathEl) {
+        areaPathEl.setAttribute('d', areaPath);
+        // Use gradient - if that fails, use semi-transparent purple as fallback
+        areaPathEl.setAttribute('fill', 'rgba(173, 86, 196, 0.15)');
+        areaPathEl.style.fill = 'rgba(173, 86, 196, 0.15)';
+      }
+      if (linePathEl) {
+        linePathEl.setAttribute('d', linePath);
+        linePathEl.setAttribute('stroke', '#ad56c4');
+        linePathEl.style.stroke = '#ad56c4';
+      }
 
       // Update end point position
       const lastPoint = sortedPoints[sortedPoints.length - 1];
       const lastX = (sortedPoints.length - 1) * stepX;
       const lastY = chartHeight - ((lastPoint.value - minValue) / valueRange * chartHeight);
-      document.getElementById('chart-end-point').setAttribute('cx', lastX);
-      document.getElementById('chart-end-point').setAttribute('cy', lastY);
+      const endPoint = document.getElementById('chart-end-point');
+      if (endPoint) {
+        endPoint.setAttribute('cx', lastX);
+        endPoint.setAttribute('cy', lastY);
+        endPoint.setAttribute('fill', '#ad56c4');
+      }
 
       // Update x-axis labels (show first, middle, last dates)
       const xLabels = document.getElementById('chart-x-labels');
-      xLabels.innerHTML = '';
-      const labelPositions = [0, Math.floor(sortedPoints.length / 2), sortedPoints.length - 1];
-      labelPositions.forEach(index => {
-        const date = new Date(sortedPoints[index].date);
-        const label = document.createElement('span');
-        label.textContent = date.toLocaleDateString('en-US', { month: 'short' });
-        xLabels.appendChild(label);
-      });
+      if (xLabels) {
+        xLabels.innerHTML = '';
+        const labelPositions = [0, Math.floor(sortedPoints.length / 2), sortedPoints.length - 1];
+        labelPositions.forEach(index => {
+          const dateStr = sortedPoints[index].date;
+          let date;
+          // Try parsing different date formats
+          if (dateStr.includes('–') || dateStr.includes('-')) {
+            // Format like "Oct 5 – 11, 2025" or "2025-01-01"
+            // For ISO format, direct parsing works
+            // For range format, parse the first part
+            if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+              date = new Date(dateStr);
+            } else {
+              // Try to parse the start of a range like "Oct 5 – 11, 2025"
+              const match = dateStr.match(/^([A-Za-z]+ \d+)/);
+              if (match) {
+                date = new Date(match[1] + ', ' + dateStr.split(',').pop());
+              } else {
+                date = new Date(dateStr);
+              }
+            }
+          } else {
+            date = new Date(dateStr);
+          }
+
+          const label = document.createElement('span');
+          if (!isNaN(date.getTime())) {
+            label.textContent = date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+          } else {
+            // Fallback: show the original string truncated
+            label.textContent = dateStr.substring(0, 8);
+          }
+          xLabels.appendChild(label);
+        });
+      }
     }
 
     // Update competition table with real products
