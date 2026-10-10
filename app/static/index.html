@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SellerScope — AI Market Opportunity Analyst</title>
   <style>
-    @import 'tailwindcss';
-    @import 'tw-animate-css';
-    @import 'shadcn/tailwind.css';
-
     :root {
       --background: #ffffff;
       --foreground: #172033;
@@ -233,6 +229,7 @@
     .test-aside ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
     .test-aside li { display: flex; gap: 8px; align-items: center; font-size: 12px; line-height: 1.5; }
     .aside-note { display: flex; gap: 8px; align-items: flex-start; margin-top: 24px; font-size: 11px; color: rgba(255,255,255,.82); line-height: 1.5; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.2); }
+    #test-product-aside { align-self: start; }
 
     .report-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
     .search-input { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid #dce3ed; border-radius: 6px; padding: 8px 12px; flex: 1; }
@@ -547,8 +544,8 @@
                 </div>
                 <div>
                   <p class="eyebrow">Opportunity score</p>
-                  <strong class="metric-value">82/100</strong>
-                  <p class="metric-detail">Strong opportunity</p>
+                  <strong class="metric-value" id="dashboard-opportunity-score">82/100</strong>
+                  <p class="metric-detail" id="dashboard-opportunity-detail">Strong opportunity</p>
                 </div>
               </div>
               <div class="metric-card">
@@ -562,8 +559,8 @@
                 </div>
                 <div>
                   <p class="eyebrow">Competition</p>
-                  <strong class="metric-value">Medium</strong>
-                  <p class="metric-detail">Room for differentiation</p>
+                  <strong class="metric-value" id="dashboard-competition">Medium</strong>
+                  <p class="metric-detail" id="dashboard-competition-detail">Room for differentiation</p>
                 </div>
               </div>
               <div class="metric-card">
@@ -574,8 +571,8 @@
                 </div>
                 <div>
                   <p class="eyebrow">Demand signal</p>
-                  <strong class="metric-value">High</strong>
-                  <p class="metric-detail">Strong customer interest</p>
+                  <strong class="metric-value" id="dashboard-demand">High</strong>
+                  <p class="metric-detail" id="dashboard-demand-detail">Strong customer interest</p>
                 </div>
               </div>
               <div class="metric-card">
@@ -588,7 +585,7 @@
                 </div>
                 <div>
                   <p class="eyebrow">Customer pain points</p>
-                  <strong class="metric-value">14 detected</strong>
+                  <strong class="metric-value" id="dashboard-pain-points">14 detected</strong>
                   <p class="metric-detail">Recurring frustrations</p>
                 </div>
               </div>
@@ -603,7 +600,7 @@
                 </div>
                 <div>
                   <p class="eyebrow">Product gaps</p>
-                  <strong class="metric-value" id="metric-product-gaps">8 found</strong>
+                  <strong class="metric-value" id="dashboard-product-gaps">8 found</strong>
                   <p class="metric-detail">Improvement opportunities</p>
                 </div>
               </div>
@@ -1019,37 +1016,37 @@
                   <div class="progress-row">
                     <div class="progress-label">
                       <span>Demand</span>
-                      <strong>85</strong>
+                      <strong id="score-demand">85</strong>
                     </div>
                     <div class="progress-track">
-                      <span class="progress-fill fill-green" style="width: 85%"></span>
+                      <span class="progress-fill fill-green" id="score-demand-bar" style="width: 85%"></span>
                     </div>
                   </div>
                   <div class="progress-row">
                     <div class="progress-label">
                       <span>Customer need</span>
-                      <strong>90</strong>
+                      <strong id="score-customer-need">90</strong>
                     </div>
                     <div class="progress-track">
-                      <span class="progress-fill fill-green" style="width: 90%"></span>
+                      <span class="progress-fill fill-green" id="score-customer-need-bar" style="width: 90%"></span>
                     </div>
                   </div>
                   <div class="progress-row">
                     <div class="progress-label">
                       <span>Product gap</span>
-                      <strong>88</strong>
+                      <strong id="score-product-gap">88</strong>
                     </div>
                     <div class="progress-track">
-                      <span class="progress-fill fill-blue" style="width: 88%"></span>
+                      <span class="progress-fill fill-blue" id="score-product-gap-bar" style="width: 88%"></span>
                     </div>
                   </div>
                   <div class="progress-row">
                     <div class="progress-label">
                       <span>Competition fit</span>
-                      <strong>65</strong>
+                      <strong id="score-competition-fit">65</strong>
                     </div>
                     <div class="progress-track">
-                      <span class="progress-fill fill-amber" style="width: 65%"></span>
+                      <span class="progress-fill fill-amber" id="score-competition-fit-bar" style="width: 65%"></span>
                     </div>
                   </div>
                 </div>
@@ -1216,9 +1213,9 @@
                     <h2>Ways to stand out</h2>
                     <p>Concrete improvements based on customer feedback.</p>
                   </div>
-                  <span class="badge badge-blue">8 found</span>
+                  <span class="badge badge-blue" id="product-gaps-count">8 found</span>
                 </div>
-                <div class="gap-list">
+                <div class="gap-list" id="product-gaps-list">
                   <div class="gap-item">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <polyline points="20 6 9 17 4 12"></polyline>
@@ -1260,12 +1257,12 @@
                 </div>
               </div>
               <div class="recommendation">
-                <h3>Proceed with differentiation focus</h3>
-                <p>This market shows opportunity, but success depends on addressing specific customer pain points rather than competing on price alone.</p>
+                <h3 id="recommendation-title">Proceed with differentiation focus</h3>
+                <p id="recommendation-text">This market shows opportunity, but success depends on addressing specific customer pain points rather than competing on price alone.</p>
                 <div class="recommendation-columns">
                   <div class="rec-card">
                     <h4>Focus on</h4>
-                    <ul>
+                    <ul id="recommendation-focus">
                       <li>Stability and build quality</li>
                       <li>Metal hinge mechanism</li>
                       <li>Quick-adjust features</li>
@@ -1274,7 +1271,7 @@
                   </div>
                   <div class="rec-card">
                     <h4>Avoid</h4>
-                    <ul>
+                    <ul id="recommendation-avoid">
                       <li>Racing to lowest price</li>
                       <li>Plastic construction</li>
                       <li>Copying existing designs</li>
@@ -1358,6 +1355,38 @@
                   </div>
                 </form>
               </div>
+              <div class="test-aside" id="test-product-aside" style="display: none;">
+                <div class="aside-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18h6"></path>
+                    <path d="M10 22h4"></path>
+                    <path d="M12 2v1"></path>
+                    <path d="M12 7a5 5 0 1 0 4.546 2.916A5.4 5.4 0 0 0 12 7Z"></path>
+                  </svg>
+                </div>
+                <h3>Test Your Product</h3>
+                <p style="color: rgba(255,255,255,.88); font-size: 12px; line-height: 1.5; margin-bottom: 16px;">
+                  Enter your product name and key features to see how well it addresses the market opportunities.
+                </p>
+                <form id="test-product-form" style="display: flex; flex-direction: column; gap: 12px;">
+                  <label style="color: #fff; font-size: 12px; font-weight: 700;">
+                    Product name
+                    <input type="text" id="test-product-name" placeholder="e.g. My Laptop Stand" style="background: rgba(255,255,255,.13); border: 1px solid rgba(255,255,255,.2); color: #fff; padding: 10px; border-radius: 6px;" />
+                  </label>
+                  <label style="color: #fff; font-size: 12px; font-weight: 700;">
+                    Key features (comma-separated)
+                    <textarea id="test-product-features" rows="3" placeholder="e.g. metal hinges, locking mechanism, 17-inch support" style="background: rgba(255,255,255,.13); border: 1px solid rgba(255,255,255,.2); color: #fff; padding: 10px; border-radius: 6px; resize: vertical;"></textarea>
+                  </label>
+                  <button type="submit" class="button" style="background: #fff; color: #ad56c4; border: 0; padding: 12px;">
+                    Check My Product
+                  </button>
+                  <div id="test-product-error" style="color: #ff6b6b; font-size: 11px; display: none;"></div>
+                </form>
+                <div id="test-product-results" style="margin-top: 20px; display: none;">
+                  <h4 style="color: #fff; font-size: 13px; margin: 0 0 12px;">Results</h4>
+                  <div id="test-product-results-content" style="color: rgba(255,255,255,.88); font-size: 11px; line-height: 1.6;"></div>
+                </div>
+              </div>
               <div class="test-aside">
                 <div class="aside-icon">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1416,7 +1445,7 @@
           <div class="page-content">
             <div class="page-header">
               <div>
-                <p class="eyebrow blue-text">YOUR WORKSPACE</p>
+                <p class="eyebrow blue-text">YOUR WORKSPACE <span class="demo-label" style="margin-left: 8px;">Coming soon</span></p>
                 <h1>Reports</h1>
                 <p>Keep your product research organized in one place.</p>
               </div>
@@ -1726,21 +1755,21 @@
     function goTo(pageId) {
       activePage = pageId;
       mobileOpen = false;
-      
+
       // Update page title
       pageTitle.textContent = pageTitles[pageId] || pageId;
-      
+
       // Hide all pages
       document.querySelectorAll('[id^="page-"]').forEach(page => {
         page.classList.add('hidden');
       });
-      
+
       // Show active page
       const activePageEl = document.getElementById(`page-${pageId}`);
       if (activePageEl) {
         activePageEl.classList.remove('hidden');
       }
-      
+
       // Update nav items
       document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
@@ -1748,7 +1777,7 @@
           item.classList.add('active');
         }
       });
-      
+
       // Update mobile nav
       document.querySelectorAll('.mobile-nav button').forEach(item => {
         item.classList.remove('active');
@@ -1756,13 +1785,60 @@
           item.classList.add('active');
         }
       });
-      
+
       // Close mobile menu
       sidebar.classList.remove('open');
       sidebarOverlay.classList.add('hidden');
-      
+
+      // Update dashboard metric cards if navigating to dashboard and analysis data exists
+      if (pageId === 'dashboard' && analysisData) {
+        updateDashboardCards(analysisData);
+      }
+
+      // Show test-product aside if analysis data exists and going to test page
+      if (pageId === 'test' && analysisData) {
+        const aside = document.getElementById('test-product-aside');
+        if (aside) aside.style.display = 'block';
+      }
+
       // Scroll to top
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Function to update dashboard cards when navigating to dashboard
+    function updateDashboardCards(data) {
+      const trend = data.trend || {};
+      const topOpportunity = data.opportunities && data.opportunities.length > 0 ? data.opportunities[0] : null;
+
+      const opportunityScore = topOpportunity ? Math.round(topOpportunity.opportunity_score * 100) : '--';
+      const dashboardOppScore = document.getElementById('dashboard-opportunity-score');
+      if (dashboardOppScore) dashboardOppScore.textContent = `${opportunityScore}/100`;
+
+      const dashboardOppDetail = document.getElementById('dashboard-opportunity-detail');
+      if (dashboardOppDetail) dashboardOppDetail.textContent = topOpportunity ? topOpportunity.interpretation : 'No data';
+
+      const productCount = data.products ? data.products.length : 0;
+      const competitionText = productCount > 10 ? 'High' : productCount > 5 ? 'Medium' : 'Low';
+      const dashboardComp = document.getElementById('dashboard-competition');
+      if (dashboardComp) dashboardComp.textContent = competitionText;
+
+      const dashboardCompDetail = document.getElementById('dashboard-competition-detail');
+      if (dashboardCompDetail) dashboardCompDetail.textContent = productCount > 0 ? `${productCount} competitors found` : 'No data';
+
+      const demandText = trend.direction === 'rising' ? 'High' : trend.direction === 'falling' ? 'Low' : 'Stable';
+      const dashboardDemand = document.getElementById('dashboard-demand');
+      if (dashboardDemand) dashboardDemand.textContent = demandText;
+
+      const dashboardDemandDetail = document.getElementById('dashboard-demand-detail');
+      if (dashboardDemandDetail) dashboardDemandDetail.textContent = trend.change_pct ? `${Math.round(trend.change_pct)}% change` : 'Consistent interest';
+
+      const painPointsCount = data.pain_points ? data.pain_points.length : 0;
+      const dashboardPain = document.getElementById('dashboard-pain-points');
+      if (dashboardPain) dashboardPain.textContent = `${painPointsCount} detected`;
+
+      const opportunitiesCount = data.opportunities ? data.opportunities.length : 0;
+      const dashboardGaps = document.getElementById('dashboard-product-gaps');
+      if (dashboardGaps) dashboardGaps.textContent = `${opportunitiesCount} found`;
     }
 
     // Sidebar toggle
@@ -1854,6 +1930,8 @@
           demo_mode: demoMode
         };
 
+        console.log('Sending request to /api/analyze:', requestBody);
+
         const response = await fetch('/api/analyze', {
           method: 'POST',
           headers: {
@@ -1862,12 +1940,16 @@
           body: JSON.stringify(requestBody)
         });
 
+        console.log('Response status:', response.status);
+
         if (!response.ok) {
           const errorData = await response.json();
+          console.error('Error response:', errorData);
           throw new Error(errorData.detail || 'Analysis failed. Please try again.');
         }
 
         const data = await response.json();
+        console.log('Analysis data received:', data);
         analysisData = data; // Store for later use
         analyzed = true;
 
@@ -1907,19 +1989,354 @@
 
     // Function to populate analysis page with real data
     function populateAnalysisPage(data) {
-      // TODO: Populate all sections with real data from the response
-      // This is a placeholder - need to map each section to the corresponding data fields
       console.log('Analysis data received:', data);
 
-      // For now, keeping the mock data until we complete the mapping
-      // Will need to update:
-      // - Page header (product name, market, price)
-      // - Metric cards (opportunity score, demand, competition, pain points, product gaps)
-      // - Demand chart (trend.data_points)
-      // - Competition table (products array)
-      // - Pain points list (pain_points array)
-      // - Product gaps (opportunities array or derived from pain_points)
-      // - Recommendation (derived from opportunities or why_now)
+      // Validate data structure
+      if (!data || typeof data !== 'object') {
+        console.error('Invalid data received:', data);
+        alert('Invalid data received from server. Please try again.');
+        return;
+      }
+
+      const trend = data.trend || {};
+      const topOpportunity = data.opportunities && data.opportunities.length > 0 ? data.opportunities[0] : null;
+
+      // Page header
+      const productName = data.query && data.query.product ? data.query.product : 'Unknown Product';
+      const market = data.query && data.query.market ? data.query.market : 'Unknown Market';
+      const targetPrice = data.query && data.query.target_price ? `₹${data.query.target_price.toLocaleString()}` : 'Not specified';
+      const analysisProductName = document.getElementById('analysis-product-name');
+      const analysisProductDetails = document.getElementById('analysis-product-details');
+      if (analysisProductName) analysisProductName.textContent = productName;
+      if (analysisProductDetails) analysisProductDetails.textContent = `${market} · Target price ${targetPrice} · Analysis completed today`;
+
+      // Analysis page metric cards
+      const opportunityScore = topOpportunity && topOpportunity.opportunity_score ? Math.round(topOpportunity.opportunity_score * 100) : '--';
+      const metricOppScore = document.getElementById('metric-opportunity-score');
+      const metricOppDetail = document.getElementById('metric-opportunity-detail');
+      if (metricOppScore) metricOppScore.textContent = `${opportunityScore}/100`;
+      if (metricOppDetail) metricOppDetail.textContent = topOpportunity && topOpportunity.interpretation ? topOpportunity.interpretation : 'No data';
+
+      const demandText = trend.direction === 'rising' ? 'High' : trend.direction === 'falling' ? 'Low' : 'Stable';
+      const metricDemand = document.getElementById('metric-demand');
+      const metricDemandDetail = document.getElementById('metric-demand-detail');
+      if (metricDemand) metricDemand.textContent = demandText;
+      if (metricDemandDetail) metricDemandDetail.textContent = trend.change_pct ? `${Math.round(trend.change_pct)}% change` : 'Consistent interest';
+
+      const productCount = data.products ? data.products.length : 0;
+      const competitionText = productCount > 10 ? 'High' : productCount > 5 ? 'Medium' : 'Low';
+      const metricCompetition = document.getElementById('metric-competition');
+      const metricCompetitionDetail = document.getElementById('metric-competition-detail');
+      if (metricCompetition) metricCompetition.textContent = competitionText;
+      if (metricCompetitionDetail) metricCompetitionDetail.textContent = productCount > 0 ? `${productCount} competitors found` : 'No data';
+
+      const painPointsCount = data.pain_points ? data.pain_points.length : 0;
+      const metricPainPoints = document.getElementById('metric-pain-points');
+      if (metricPainPoints) metricPainPoints.textContent = painPointsCount;
+
+      const opportunitiesCount = data.opportunities ? data.opportunities.length : 0;
+      const productGapsCount = document.getElementById('product-gaps-count');
+      if (productGapsCount) productGapsCount.textContent = `${opportunitiesCount} found`;
+
+      // Dashboard metric cards are only updated when navigating to dashboard page
+      // They are not in the DOM during analysis page rendering
+
+      // Score breakdown bars (only on analysis page)
+      // Demand: trend.direction mapping
+      const demandScore = trend.direction === 'rising' ? 85 : trend.direction === 'stable' ? 60 : 30;
+      const scoreDemand = document.getElementById('score-demand');
+      const scoreDemandBar = document.getElementById('score-demand-bar');
+      if (scoreDemand && scoreDemandBar) {
+        scoreDemand.textContent = demandScore;
+        scoreDemandBar.style.width = `${demandScore}%`;
+      }
+
+      // Customer need: opportunities[0].pain_score * 100
+      const customerNeedScore = topOpportunity ? Math.round(topOpportunity.pain_score * 100) : 0;
+      const scoreCustomerNeed = document.getElementById('score-customer-need');
+      const scoreCustomerNeedBar = document.getElementById('score-customer-need-bar');
+      if (scoreCustomerNeed && scoreCustomerNeedBar) {
+        scoreCustomerNeed.textContent = customerNeedScore;
+        scoreCustomerNeedBar.style.width = `${customerNeedScore}%`;
+      }
+
+      // Product gap: (1 - opportunities[0].coverage_score) * 100
+      const productGapScore = topOpportunity ? Math.round((1 - topOpportunity.coverage_score) * 100) : 0;
+      const scoreProductGap = document.getElementById('score-product-gap');
+      const scoreProductGapBar = document.getElementById('score-product-gap-bar');
+      if (scoreProductGap && scoreProductGapBar) {
+        scoreProductGap.textContent = productGapScore;
+        scoreProductGapBar.style.width = `${productGapScore}%`;
+      }
+
+      // Competition fit: opportunities[0].coverage_score * 100
+      const competitionFitScore = topOpportunity ? Math.round(topOpportunity.coverage_score * 100) : 0;
+      const scoreCompetitionFit = document.getElementById('score-competition-fit');
+      const scoreCompetitionFitBar = document.getElementById('score-competition-fit-bar');
+      if (scoreCompetitionFit && scoreCompetitionFitBar) {
+        scoreCompetitionFit.textContent = competitionFitScore;
+        scoreCompetitionFitBar.style.width = `${competitionFitScore}%`;
+      }
+
+      // Recommendation section (only on analysis page)
+      // Use why_now if present, else opportunities[0].interpretation
+      const recommendationText = data.why_now || (topOpportunity ? topOpportunity.interpretation : 'No recommendation available');
+      const recommendationTextEl = document.getElementById('recommendation-text');
+      const recommendationTitle = document.getElementById('recommendation-title');
+      if (recommendationTextEl && recommendationTitle) {
+        recommendationTextEl.textContent = recommendationText;
+        recommendationTitle.textContent = data.why_now ? 'Market timing' : 'Recommendation';
+      }
+
+      // Update recommendation focus/avoid lists with addressing_features
+      if (topOpportunity && topOpportunity.addressing_features) {
+        const focusList = document.getElementById('recommendation-focus');
+        const avoidList = document.getElementById('recommendation-avoid');
+
+        if (focusList) {
+          focusList.innerHTML = topOpportunity.addressing_features.map(f => `<li>${f}</li>`).join('');
+        }
+
+        // Generate avoid suggestions based on pain points
+        if (data.pain_points && data.pain_points.length > 0 && avoidList) {
+          avoidList.innerHTML = data.pain_points.slice(0, 4).map(p => `<li>Issues with ${p.theme}</li>`).join('');
+        }
+      }
+
+      // Demand chart - update with trend.data_points
+      if (trend.data_points && Array.isArray(trend.data_points) && trend.data_points.length > 0) {
+        updateDemandChart(trend.data_points);
+      }
+
+      // Competition table - populate with products array
+      if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+        updateCompetitionTable(data.products);
+      }
+
+      // Pain points list - populate with pain_points array
+      if (data.pain_points && Array.isArray(data.pain_points) && data.pain_points.length > 0) {
+        updatePainPointsList(data.pain_points);
+      }
+
+      // Product gaps list - populate with opportunities array
+      if (data.opportunities && Array.isArray(data.opportunities) && data.opportunities.length > 0) {
+        updateProductGapsList(data.opportunities);
+      }
+    }
+
+    // Update demand chart with real data points
+    function updateDemandChart(dataPoints) {
+      // Sort data points by date
+      const sortedPoints = [...dataPoints].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      // Calculate SVG path
+      const width = 600;
+      const height = 220;
+      const padding = 25;
+      const chartHeight = height - padding;
+
+      // Find min and max values
+      const values = sortedPoints.map(p => p.value);
+      const minValue = Math.min(...values);
+      const maxValue = Math.max(...values);
+      const valueRange = maxValue - minValue || 1;
+
+      // Generate path coordinates
+      const stepX = width / (sortedPoints.length - 1);
+      let areaPath = `M0 ${chartHeight - ((sortedPoints[0].value - minValue) / valueRange * chartHeight)}`;
+      let linePath = `M0 ${chartHeight - ((sortedPoints[0].value - minValue) / valueRange * chartHeight)}`;
+
+      sortedPoints.forEach((point, index) => {
+        const x = index * stepX;
+        const y = chartHeight - ((point.value - minValue) / valueRange * chartHeight);
+        linePath += ` L${x} ${y}`;
+        areaPath += ` L${x} ${y}`;
+      });
+
+      // Close area path
+      areaPath += ` L${width} ${chartHeight} L0 ${chartHeight}Z`;
+
+      // Update SVG paths
+      document.getElementById('chart-area-path').setAttribute('d', areaPath);
+      document.getElementById('chart-line-path').setAttribute('d', linePath);
+
+      // Update end point position
+      const lastPoint = sortedPoints[sortedPoints.length - 1];
+      const lastX = (sortedPoints.length - 1) * stepX;
+      const lastY = chartHeight - ((lastPoint.value - minValue) / valueRange * chartHeight);
+      document.getElementById('chart-end-point').setAttribute('cx', lastX);
+      document.getElementById('chart-end-point').setAttribute('cy', lastY);
+
+      // Update x-axis labels (show first, middle, last dates)
+      const xLabels = document.getElementById('chart-x-labels');
+      xLabels.innerHTML = '';
+      const labelPositions = [0, Math.floor(sortedPoints.length / 2), sortedPoints.length - 1];
+      labelPositions.forEach(index => {
+        const date = new Date(sortedPoints[index].date);
+        const label = document.createElement('span');
+        label.textContent = date.toLocaleDateString('en-US', { month: 'short' });
+        xLabels.appendChild(label);
+      });
+    }
+
+    // Update competition table with real products
+    function updateCompetitionTable(products) {
+      const tbody = document.getElementById('competition-table-body');
+      tbody.innerHTML = '';
+
+      // Sort by reviews count (descending)
+      const sortedProducts = [...products].sort((a, b) => (b.reviews_count || 0) - (a.reviews_count || 0));
+
+      // Take top 5
+      sortedProducts.slice(0, 5).forEach(product => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="strong-cell">${product.title || 'Unknown'}</td>
+          <td>${product.price ? `₹${product.price.toLocaleString()}` : 'N/A'}</td>
+          <td>${product.rating || 'N/A'}</td>
+          <td>${product.reviews_count ? product.reviews_count.toLocaleString() : 'N/A'}</td>
+          <td>${product.brand || 'N/A'}</td>
+          <td>${product.merchant || 'N/A'}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Update pain points list with real data
+    function updatePainPointsList(painPoints) {
+      const list = document.getElementById('pain-points-list');
+      list.innerHTML = '';
+
+      // Sort by mentions (descending)
+      const sortedPainPoints = [...painPoints].sort((a, b) => b.mentions - a.mentions);
+
+      // Take top 5
+      sortedPainPoints.slice(0, 5).forEach((painPoint, index) => {
+        const maxMentions = sortedPainPoints[0].mentions;
+        const percentage = Math.round((painPoint.mentions / maxMentions) * 100);
+
+        const row = document.createElement('div');
+        row.className = 'pain-row';
+        row.innerHTML = `
+          <div class="pain-rank">${index + 1}</div>
+          <div class="pain-main">
+            <div class="progress-label">
+              <strong>${painPoint.theme}</strong>
+              <span>${percentage}% importance</span>
+            </div>
+            <div class="progress-track">
+              <span class="progress-fill fill-red" style="width: ${percentage}%"></span>
+            </div>
+            <p style="color: #7a889d; font-size: 12px; margin-top: 6px;">${painPoint.example_snippet || 'No example available'}</p>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+
+      // Update count badge
+      document.getElementById('pain-points-count').textContent = `${painPoints.length} detected`;
+    }
+
+    // Update product gaps list with real opportunities
+    function updateProductGapsList(opportunities) {
+      const list = document.getElementById('product-gaps-list');
+      list.innerHTML = '';
+
+      // Sort by opportunity_score (descending)
+      const sortedOpportunities = [...opportunities].sort((a, b) => b.opportunity_score - a.opportunity_score);
+
+      // Take top 5
+      sortedOpportunities.slice(0, 5).forEach(opportunity => {
+        const item = document.createElement('div');
+        item.className = 'gap-item';
+        item.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <p>${opportunity.interpretation || opportunity.theme}</p>
+        `;
+        list.appendChild(item);
+      });
+
+      // Update count badge
+      document.getElementById('product-gaps-count').textContent = `${opportunities.length} found`;
+    }
+
+    // Function to call /api/test-product endpoint
+    async function testProduct(productName, features) {
+      if (!analysisData) {
+        throw new Error('Run a market analysis first.');
+      }
+
+      const response = await fetch('/api/test-product', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          product_name: productName,
+          features: features
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Product test failed.');
+      }
+
+      return await response.json();
+    }
+
+    // TODO: Add UI for /api/test-product (product name + features input)
+    // This should be integrated into the Test Product page or a new modal
+    // For now, the function is available to be called when the UI is added
+
+    // Test product form handler
+    const testProductForm = document.getElementById('test-product-form');
+    if (testProductForm) {
+      testProductForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const productName = document.getElementById('test-product-name').value.trim();
+        const featuresText = document.getElementById('test-product-features').value.trim();
+        const features = featuresText.split(',').map(f => f.trim()).filter(f => f.length > 0);
+        const errorDiv = document.getElementById('test-product-error');
+        const resultsDiv = document.getElementById('test-product-results');
+        const resultsContent = document.getElementById('test-product-results-content');
+
+        if (!productName || features.length === 0) {
+          errorDiv.textContent = 'Please enter a product name and at least one feature.';
+          errorDiv.style.display = 'block';
+          return;
+        }
+
+        try {
+          const results = await testProduct(productName, features);
+
+          // Display results
+          resultsDiv.style.display = 'block';
+          resultsContent.innerHTML = `
+            <p><strong>Matched Features:</strong> ${results.matched_features.join(', ') || 'None'}</p>
+            <p><strong>Unmatched Features:</strong> ${results.unmatched_features.join(', ') || 'None'}</p>
+            <p style="margin-top: 12px;"><strong>Coverage Summary:</strong></p>
+            <p>${results.coverage_summary}</p>
+            <p style="margin-top: 12px;"><strong>Addressed Opportunities:</strong></p>
+            <ul style="margin: 8px 0; padding-left: 18px;">
+              ${results.addressed_opportunities.map(opp => `<li>${opp.theme} (${Math.round(opp.opportunity_score * 100)}%): ${opp.interpretation}</li>`).join('') || '<li>None</li>'}
+            </ul>
+            <p style="margin-top: 12px;"><strong>Missed Opportunities:</strong></p>
+            <ul style="margin: 8px 0; padding-left: 18px;">
+              ${results.missed_opportunities.map(opp => `<li>${opp.theme} (${Math.round(opp.opportunity_score * 100)}%): ${opp.interpretation}</li>`).join('') || '<li>None</li>'}
+            </ul>
+          `;
+          errorDiv.style.display = 'none';
+
+        } catch (error) {
+          errorDiv.textContent = error.message;
+          errorDiv.style.display = 'block';
+          resultsDiv.style.display = 'none';
+        }
+      });
     }
 
     // Initialize

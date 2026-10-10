@@ -4,7 +4,7 @@ from app import pipeline
 def test_run_analysis_assembles_contract_shape_without_api_calls(monkeypatch):
     calls = []
 
-    def fake_search(params):
+    def fake_search(params, **kwargs):
         calls.append(params)
         if params["engine"] == "google_shopping":
             return {
@@ -95,7 +95,7 @@ def test_run_analysis_assembles_contract_shape_without_api_calls(monkeypatch):
     assert calls[2] == {
         "engine": "google_trends",
         "q": "wireless headphones",
-        "geo": "in",
+        "geo": "IN",
         "data_type": "TIMESERIES",
     }
     for params in calls[:2]:

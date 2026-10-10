@@ -1,6 +1,6 @@
 import pandas as pd
 
-from app.supply.cleaning import clean_products, dedupe, parse_price, price_stats
+from app.supply.cleaning import clean_products, dedupe, parse_price, price_stats, to_records
 
 
 def test_clean_products_parses_normal_prices_and_fields():
@@ -69,6 +69,10 @@ def test_clean_products_accepts_serpapi_extracted_price_without_optional_fields(
     assert frame.loc[0, "price"] == 1499
     assert pd.isna(frame.loc[0, "rating"])
     assert pd.isna(frame.loc[0, "reviews_count"])
+
+    records = to_records(frame)
+    assert records[0]["rating"] is None
+    assert records[0]["reviews_count"] is None
 
 
 def test_dedupe_uses_title_and_merchant():

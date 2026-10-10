@@ -22,11 +22,13 @@ def cache_db(monkeypatch):
         os.remove(cache_db)
 
 
-def test_cache_miss_with_live_false_raises(cache_db, monkeypatch):
+def test_cache_miss_without_api_key_raises_even_when_live_false(cache_db, monkeypatch):
     monkeypatch.setenv("LIVE", "false")
+    monkeypatch.delenv("SERPAPI_KEY", raising=False)
+    monkeypatch.setattr(client, "load_dotenv", lambda *args, **kwargs: None)
 
-    with pytest.raises(RuntimeError, match="cache miss"):
-        client.search({"engine": "google", "q": "desk"})
+    with pytest.raises(RuntimeError, match="SERPAPI_KEY is missing"):
+        client.search({"engine": "google", "q": "desk"}, force_live=False)
 
 
 def test_cache_hit_returns_stored_data_without_calling_client(

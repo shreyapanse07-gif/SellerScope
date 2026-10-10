@@ -1,110 +1,300 @@
 {
-  "query": {
-    "product": "wireless earbuds",
-    "market": "India",
-    "target_price": 1500
+  "wireless earbuds": {
+    "query": {
+      "product": "wireless earbuds",
+      "market": "India",
+      "target_price": 1500
+    },
+    "products": [
+      {
+        "title": "Zenith Pro Earbuds 40hr Battery ANC",
+        "brand": "Zenith",
+        "price": 1999.0,
+        "merchant": "Flipkart",
+        "rating": 4.2,
+        "reviews_count": 340
+      },
+      {
+        "title": "Boltz Wireless Earbuds Waterproof IPX7",
+        "brand": "Boltz",
+        "price": 1299.0,
+        "merchant": "Amazon.in",
+        "rating": 3.9,
+        "reviews_count": 180
+      },
+      {
+        "title": "Acme Budget Earbuds Basic",
+        "brand": "Acme",
+        "price": 799.0,
+        "merchant": "Flipkart",
+        "rating": 3.5,
+        "reviews_count": 95
+      }
+    ],
+    "price_stats": {
+      "min": 799.0,
+      "median": 1299.0,
+      "max": 1999.0,
+      "buckets": [
+        {"range": "Under ₹1000", "count": 1},
+        {"range": "₹1000-2000", "count": 2}
+      ]
+    },
+    "features": {
+      "long_battery": 0.33,
+      "waterproof": 0.33,
+      "noise_cancelling": 0.33,
+      "wireless": 1.0
+    },
+    "pain_points": [
+      {
+        "theme": "short battery life",
+        "mentions": 5,
+        "example_snippet": "Battery dies within 3 hours even on low volume",
+        "source_index": 1,
+        "addressing_features": ["long_battery"],
+        "evidence_strength": "strong"
+      },
+      {
+        "theme": "bluetooth connection dropping",
+        "mentions": 4,
+        "example_snippet": "Keeps disconnecting randomly while walking",
+        "source_index": 3,
+        "addressing_features": [],
+        "evidence_strength": "moderate"
+      },
+      {
+        "theme": "uncomfortable ear tips",
+        "mentions": 2,
+        "example_snippet": "Ear tips are uncomfortable after an hour of wear",
+        "source_index": 5,
+        "addressing_features": [],
+        "evidence_strength": "low"
+      }
+    ],
+    "opportunities": [
+      {
+        "theme": "bluetooth connection dropping",
+        "pain_score": 1.0,
+        "coverage_score": 0.0,
+        "opportunity_score": 1.0,
+        "interpretation": "High pain, low competitor coverage — strong opportunity",
+        "evidence_strength": "moderate",
+        "example_snippet": "Keeps disconnecting randomly while walking",
+        "source_index": 3,
+        "addressing_features": []
+      },
+      {
+        "theme": "short battery life",
+        "pain_score": 1.0,
+        "coverage_score": 0.33,
+        "opportunity_score": 0.67,
+        "interpretation": "High pain, moderate competitor coverage — good opportunity",
+        "evidence_strength": "strong",
+        "example_snippet": "Battery dies within 3 hours even on low volume",
+        "source_index": 1,
+        "addressing_features": ["long_battery"]
+      },
+      {
+        "theme": "uncomfortable ear tips",
+        "pain_score": 0.4,
+        "coverage_score": 0.0,
+        "opportunity_score": 0.4,
+        "interpretation": "Moderate pain, low coverage — worth investigating",
+        "evidence_strength": "low",
+        "example_snippet": "Ear tips are uncomfortable after an hour of wear",
+        "source_index": 5,
+        "addressing_features": []
+      }
+    ],
+    "trend": {
+      "direction": "stable",
+      "change_pct": 5.0,
+      "data_points": [
+        {"date": "2025-01-01", "value": 85},
+        {"date": "2025-02-01", "value": 82},
+        {"date": "2025-03-01", "value": 84},
+        {"date": "2025-04-01", "value": 86},
+        {"date": "2025-05-01", "value": 83},
+        {"date": "2025-06-01", "value": 85},
+        {"date": "2025-07-01", "value": 87},
+        {"date": "2025-08-01", "value": 84},
+        {"date": "2025-09-01", "value": 86},
+        {"date": "2025-10-01", "value": 88},
+        {"date": "2025-11-01", "value": 85},
+        {"date": "2025-12-01", "value": 87}
+      ],
+      "seasonal_note": "Consistent demand with slight increase during holiday season"
+    },
+    "why_now": "The wireless earbuds market is saturated with established players. However, opportunities exist in addressing specific pain points like battery life and connection stability that competitors haven't fully solved.",
+    "news": []
   },
-  "products": [
-    {
-      "title": "Zenith Pro Earbuds 40hr Battery ANC",
-      "brand": "Zenith",
-      "price": 1999.0,
-      "merchant": "Flipkart",
-      "rating": 4.2,
-      "reviews_count": 340
+  "laptop stand": {
+    "query": {
+      "product": "laptop stand",
+      "market": "India",
+      "target_price": 1500
     },
-    {
-      "title": "Boltz Wireless Earbuds Waterproof IPX7",
-      "brand": "Boltz",
-      "price": 1299.0,
-      "merchant": "Amazon.in",
-      "rating": 3.9,
-      "reviews_count": 180
+    "products": [
+      {
+        "title": "Portronics My Buddy Laptop Stand",
+        "brand": "Portronics",
+        "price": 1199.0,
+        "merchant": "Amazon.in",
+        "rating": 4.2,
+        "reviews_count": 8420
+      },
+      {
+        "title": "STRIFF Adjustable Laptop Stand",
+        "brand": "STRIFF",
+        "price": 1499.0,
+        "merchant": "Flipkart",
+        "rating": 4.1,
+        "reviews_count": 5180
+      },
+      {
+        "title": "RAIN DESIGN mStand",
+        "brand": "RAIN DESIGN",
+        "price": 2299.0,
+        "merchant": "Amazon.in",
+        "rating": 4.5,
+        "reviews_count": 3260
+      }
+    ],
+    "price_stats": {
+      "min": 1199.0,
+      "median": 1499.0,
+      "max": 2299.0,
+      "buckets": [
+        {"range": "Under ₹1500", "count": 2},
+        {"range": "₹1500-2000", "count": 1}
+      ]
     },
-    {
-      "title": "Acme Budget Earbuds Basic",
-      "brand": "Acme",
-      "price": 799.0,
-      "merchant": "Flipkart",
-      "rating": 3.5,
-      "reviews_count": 95
-    }
-  ],
-  "price_stats": {
-    "min": 799.0,
-    "median": 1299.0,
-    "max": 1999.0,
-    "buckets": [
-      {"range": "Under ₹1000", "count": 1},
-      {"range": "₹1000-2000", "count": 2}
-    ]
-  },
-  "features": {
-    "long_battery": 0.33,
-    "waterproof": 0.33,
-    "noise_cancelling": 0.33,
-    "wireless": 1.0
-  },
-  "pain_points": [
-    {
-      "theme": "short battery life",
-      "mentions": 5,
-      "example_snippet": "Battery dies within 3 hours even on low volume",
-      "source_index": 1,
-      "addressing_features": ["long_battery"],
-      "evidence_strength": "strong"
+    "features": {
+      "adjustable_height": 0.67,
+      "portable": 0.33,
+      "foldable": 0.33,
+      "aluminum": 0.67
     },
-    {
-      "theme": "bluetooth connection dropping",
-      "mentions": 4,
-      "example_snippet": "Keeps disconnecting randomly while walking",
-      "source_index": 3,
-      "addressing_features": [],
-      "evidence_strength": "moderate"
+    "pain_points": [
+      {
+        "theme": "poor stability",
+        "mentions": 86,
+        "example_snippet": "Moves while typing and feels unsafe at full height",
+        "source_index": 1,
+        "addressing_features": ["sturdy_base", "locking_mechanism"],
+        "evidence_strength": "strong"
+      },
+      {
+        "theme": "weak hinges",
+        "mentions": 72,
+        "example_snippet": "Adjustment joints loosen after repeated use",
+        "source_index": 2,
+        "addressing_features": ["metal_hinges"],
+        "evidence_strength": "strong"
+      },
+      {
+        "theme": "difficult adjustment",
+        "mentions": 61,
+        "example_snippet": "Users want a quicker, smoother height change",
+        "source_index": 3,
+        "addressing_features": ["quick_release_levers"],
+        "evidence_strength": "moderate"
+      },
+      {
+        "theme": "poor build quality",
+        "mentions": 55,
+        "example_snippet": "Plastic parts and wobble reduce trust",
+        "source_index": 4,
+        "addressing_features": ["metal_construction"],
+        "evidence_strength": "moderate"
+      },
+      {
+        "theme": "small size",
+        "mentions": 42,
+        "example_snippet": "Larger laptops do not sit comfortably",
+        "source_index": 5,
+        "addressing_features": ["wider_base"],
+        "evidence_strength": "low"
+      }
+    ],
+    "opportunities": [
+      {
+        "theme": "poor stability",
+        "pain_score": 0.86,
+        "coverage_score": 0.0,
+        "opportunity_score": 0.86,
+        "interpretation": "Very high pain, no competitor coverage — excellent opportunity",
+        "evidence_strength": "strong",
+        "example_snippet": "Moves while typing and feels unsafe at full height",
+        "source_index": 1,
+        "addressing_features": ["sturdy_base", "locking_mechanism"]
+      },
+      {
+        "theme": "weak hinges",
+        "pain_score": 0.72,
+        "coverage_score": 0.0,
+        "opportunity_score": 0.72,
+        "interpretation": "High pain, no competitor coverage — strong opportunity",
+        "evidence_strength": "strong",
+        "example_snippet": "Adjustment joints loosen after repeated use",
+        "source_index": 2,
+        "addressing_features": ["metal_hinges"]
+      },
+      {
+        "theme": "difficult adjustment",
+        "pain_score": 0.61,
+        "coverage_score": 0.0,
+        "opportunity_score": 0.61,
+        "interpretation": "High pain, no competitor coverage — strong opportunity",
+        "evidence_strength": "moderate",
+        "example_snippet": "Users want a quicker, smoother height change",
+        "source_index": 3,
+        "addressing_features": ["quick_release_levers"]
+      },
+      {
+        "theme": "poor build quality",
+        "pain_score": 0.55,
+        "coverage_score": 0.0,
+        "opportunity_score": 0.55,
+        "interpretation": "Moderate pain, no competitor coverage — good opportunity",
+        "evidence_strength": "moderate",
+        "example_snippet": "Plastic parts and wobble reduce trust",
+        "source_index": 4,
+        "addressing_features": ["metal_construction"]
+      },
+      {
+        "theme": "small size",
+        "pain_score": 0.42,
+        "coverage_score": 0.0,
+        "opportunity_score": 0.42,
+        "interpretation": "Moderate pain, no competitor coverage — worth investigating",
+        "evidence_strength": "low",
+        "example_snippet": "Larger laptops do not sit comfortably",
+        "source_index": 5,
+        "addressing_features": ["wider_base"]
+      }
+    ],
+    "trend": {
+      "direction": "rising",
+      "change_pct": 15.0,
+      "data_points": [
+        {"date": "2025-01-01", "value": 62},
+        {"date": "2025-02-01", "value": 68},
+        {"date": "2025-03-01", "value": 64},
+        {"date": "2025-04-01", "value": 72},
+        {"date": "2025-05-01", "value": 75},
+        {"date": "2025-06-01", "value": 78},
+        {"date": "2025-07-01", "value": 76},
+        {"date": "2025-08-01", "value": 84},
+        {"date": "2025-09-01", "value": 82},
+        {"date": "2025-10-01", "value": 88},
+        {"date": "2025-11-01", "value": 86},
+        {"date": "2025-12-01", "value": 91}
+      ],
+      "seasonal_note": "Demand peaks in Q4 for holiday gift purchases"
     },
-    {
-      "theme": "uncomfortable ear tips",
-      "mentions": 2,
-      "example_snippet": "Ear tips are uncomfortable after an hour of wear",
-      "source_index": 5,
-      "addressing_features": [],
-      "evidence_strength": "low"
-    }
-  ],
-  "opportunities": [
-    {
-      "theme": "bluetooth connection dropping",
-      "pain_score": 1.0,
-      "coverage_score": 0.0,
-      "opportunity_score": 1.0,
-      "interpretation": "High pain, low competitor coverage — strong opportunity",
-      "evidence_strength": "moderate",
-      "example_snippet": "Keeps disconnecting randomly while walking",
-      "source_index": 3,
-       "addressing_features": []
-    },
-    {
-      "theme": "short battery life",
-      "pain_score": 1.0,
-      "coverage_score": 0.33,
-      "opportunity_score": 0.67,
-      "interpretation": "High pain, moderate competitor coverage — good opportunity",
-      "evidence_strength": "strong",
-      "example_snippet": "Battery dies within 3 hours even on low volume",
-      "source_index": 1,
-      "addressing_features": ["long_battery"]
-    },
-    {
-      "theme": "uncomfortable ear tips",
-      "pain_score": 0.4,
-      "coverage_score": 0.0,
-      "opportunity_score": 0.4,
-      "interpretation": "Moderate pain, low coverage — worth investigating",
-      "evidence_strength": "low",
-      "example_snippet": "Ear tips are uncomfortable after an hour of wear",
-      "source_index": 5,
-      "addressing_features": []
-    }
-  ],
-  "news": []
+    "why_now": "The laptop stand market shows strong and rising demand (15% growth over 12 months) with a significant opportunity to differentiate through stability and build quality improvements. Customers are actively searching for more durable options, but current products fall short on these specific attributes.",
+    "news": []
+  }
 }

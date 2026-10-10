@@ -69,6 +69,22 @@ def dedupe(df: pd.DataFrame) -> pd.DataFrame:
     return df.drop_duplicates(subset=["title", "merchant"]).reset_index(drop=True)
 
 
+def to_records(df: pd.DataFrame) -> list[dict]:
+    """Convert a DataFrame to records, replacing missing values with None."""
+    return df.astype(object).where(pd.notna(df), None).to_dict(orient="records")
+
+
+def to_json_safe(value):
+    """Replace NaN values recursively so result dictionaries serialize as JSON."""
+    if isinstance(value, dict):
+        return {key: to_json_safe(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [to_json_safe(item) for item in value]
+    if pd.isna(value):
+        return None
+    return value
+
+
 def price_stats(df: pd.DataFrame) -> dict:
     """Summarize prices and count them across up to five data driven bands."""
     prices = pd.to_numeric(df.get("price", pd.Series(dtype=float)), errors="coerce")

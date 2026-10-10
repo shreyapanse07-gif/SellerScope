@@ -36,8 +36,15 @@ def _complaint_snippets(response: dict) -> tuple[list[str], list[str]]:
     return snippets, source_urls
 
 
-def run_analysis(product: str, market: str, target_price: float | None) -> dict:
-    """Run the analysis pipeline, returning partial results when stages fail."""
+def run_analysis(product: str, market: str, target_price: float | None, force_live: bool = False) -> dict:
+    """Run the analysis pipeline, returning partial results when stages fail.
+
+    Args:
+        product: Product name to analyze
+        market: Market code (e.g., "India", "United States")
+        target_price: Optional target price for filtering
+        force_live: If True, bypass cache and make live API calls
+    """
     if market not in MARKETS:
         raise ValueError(f"Unsupported market: {market}")
 
@@ -48,7 +55,8 @@ def run_analysis(product: str, market: str, target_price: float | None) -> dict:
     print("[1/5] Fetching shopping data...")
     try:
         shopping_response = serp_client.search(
-            _search_params("google_shopping", product, market_params)
+            _search_params("google_shopping", product, market_params),
+            force_live=force_live
         )
     except Exception:
         logger.warning("Shopping search failed for %r", product, exc_info=True)
@@ -59,7 +67,8 @@ def run_analysis(product: str, market: str, target_price: float | None) -> dict:
         complaint_response = serp_client.search(
             _search_params(
                 "google", f'"{product}" problems OR complaints OR issues', market_params
-            )
+            ),
+            force_live=force_live
         )
     except Exception:
         logger.warning("Complaint search failed for %r", product, exc_info=True)
@@ -75,9 +84,10 @@ def run_analysis(product: str, market: str, target_price: float | None) -> dict:
             {
                 "engine": "google_trends",
                 "q": product,
-                "geo": market_params["gl"],
+                "geo": market_params["gl"].upper(),
                 "data_type": "TIMESERIES",
-            }
+            },
+            force_live=force_live
         )
         trend = trends.analyze_trend(trends_response)
         trend["seasonal_note"] = trends.detect_seasonal_pattern(
@@ -90,8 +100,8 @@ def run_analysis(product: str, market: str, target_price: float | None) -> dict:
     stats = {"min": None, "median": None, "max": None, "buckets": []}
     try:
         product_frame = cleaning.dedupe(cleaning.clean_products(shopping_response))
-        stats = cleaning.price_stats(product_frame)
-        products = product_frame.where(product_frame.notna(), None).to_dict("records")
+        stats = cleaning.to_json_safe(cleaning.price_stats(product_frame))
+        products = cleaning.to_records(product_frame)
     except Exception:
         logger.warning("Product cleaning failed for %r", product, exc_info=True)
         product_frame = None

@@ -74,7 +74,27 @@ def run_analysis(ctx: dict) -> dict:
 def load_demo_cache(product: str) -> dict:
     f = BASE.parent / "data" / "demo_cache.json"
     if f.exists():
-        return json.loads(f.read_text(encoding="utf-8"))
+        cache = json.loads(f.read_text(encoding="utf-8"))
+        # Check if cache is in new product-keyed format
+        if isinstance(cache, dict) and product.lower() in cache:
+            return cache[product.lower()]
+        # Fallback to old single-product format for backward compatibility
+        elif isinstance(cache, dict) and "query" in cache:
+            cached_product = cache.get("query", {}).get("product", "").lower()
+            if cached_product != product.lower():
+                available_products = list(cache.keys()) if isinstance(cache.get(list(cache.keys())[0]), dict) else [cached_product]
+                raise HTTPException(
+                    404,
+                    f"Demo data not available for '{product}'. Available for: {', '.join(available_products)}. Run a live analysis instead."
+                )
+            return cache
+        else:
+            # New format but product not found
+            available_products = list(cache.keys()) if isinstance(cache, dict) else []
+            raise HTTPException(
+                404,
+                f"Demo data not available for '{product}'. Available for: {', '.join(available_products)}. Run a live analysis instead."
+            )
     raise HTTPException(
         503,
         "Demo data not available yet — run a live analysis or add data/demo_cache.json",
