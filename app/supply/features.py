@@ -90,7 +90,7 @@ def extract_features(titles: list[str]) -> dict[str, list[str]]:
                 break
             raise
 
-    return {title: [] for title in titles}
+    return {}
 
 
 def feature_coverage(

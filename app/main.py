@@ -122,7 +122,8 @@ def analyze(req: AnalyzeRequest):
 def test_product(body: TestProductRequest):
     if _last_analysis is None:
         raise HTTPException(400, "Run a market analysis first.")
-    known_features = list(_last_analysis["features"].keys())
+    features = _last_analysis.get("features")
+    known_features = list(features.keys()) if isinstance(features, dict) else []
     opportunities = _last_analysis["opportunities"]
     from app.scoring.test_product import match_product
     return match_product(body.features, known_features, opportunities)
