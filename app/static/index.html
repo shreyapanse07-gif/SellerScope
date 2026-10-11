@@ -485,6 +485,60 @@
     }
 
     .hidden { display: none !important; }
+    .print-date { display: none; }
+
+    @media print {
+      @page { margin: 14mm; }
+      body * { visibility: hidden !important; }
+      #page-analysis > .test-page { display: none !important; }
+      #analysis-results,
+      #analysis-results * { visibility: visible !important; }
+      #analysis-results {
+        display: block !important;
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background: #fff !important;
+      }
+      #analysis-results > .page-header {
+        display: block !important;
+        padding-bottom: 12px;
+        margin-bottom: 16px;
+        border-bottom: 2px solid #ad56c4;
+      }
+      #analysis-results > .page-header::before {
+        content: "SellerScope Market Analysis";
+        display: block;
+        color: #6f3a7e;
+        font-size: 11pt;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      #analysis-product-name { margin-bottom: 4px; }
+      #analysis-print-date {
+        display: block !important;
+        color: #667085;
+        font-size: 9pt;
+        font-weight: 400;
+        letter-spacing: 0;
+        margin-top: 3px;
+      }
+      #analysis-results button,
+      #analysis-results .analysis-status,
+      #analysis-results .demo-label,
+      #analysis-results .header-actions { display: none !important; }
+      #analysis-results .content-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
+      #analysis-results .panel,
+      #analysis-results .metric-card { box-shadow: none !important; break-inside: avoid; }
+      #analysis-results .metric-grid { grid-template-columns: repeat(5, 1fr); gap: 7px; }
+      #analysis-results .table-scroll { overflow: visible !important; }
+      #analysis-results table { width: 100%; border-collapse: collapse; }
+      #analysis-results th,
+      #analysis-results td { border: 1px solid #d7dce5; padding: 5px; }
+      #analysis-results svg { max-width: 100%; }
+    }
   </style>
 </head>
 <body>
@@ -1261,16 +1315,12 @@
               <div>
                 <p class="eyebrow blue-text">MARKET ANALYSIS <span class="demo-label">Illustrative data</span></p>
                 <h1 id="analysis-product-name">Laptop Stand</h1>
+                <span class="print-date" id="analysis-print-date"></span>
                 <p id="analysis-product-details">India · Target price ₹1,500 · Analysis completed today</p>
               </div>
               <div class="header-actions">
-                <button class="button button-secondary">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" x2="12" y1="15" y2="3"></line>
-                  </svg>
-                  Export
+                <button class="button button-secondary" onclick="document.getElementById('analysis-print-date').textContent = 'Printed on ' + new Date().toLocaleDateString(); window.print();">
+                  Export Report
                 </button>
                 <button class="button button-primary" data-go="test">
                   New analysis
