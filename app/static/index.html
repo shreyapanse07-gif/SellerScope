@@ -329,8 +329,26 @@
 
     .centered-header { text-align: center; justify-content: center; }
     .centered-header > div { max-width: 650px; }
-    .test-layout { display: grid; grid-template-columns: 1.5fr .75fr; max-width: 920px; margin: 28px auto 0; gap: 18px; }
-    .form-panel { padding: 28px; }
+    .test-layout { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 760px; margin: 30px auto 0; gap: 18px; }
+    .form-panel { padding: 32px; border-color: #ead8f0; border-radius: 16px; box-shadow: 0 18px 48px rgba(90, 48, 108, .10); background: linear-gradient(145deg, #fff 55%, #fff8fd); }
+    #page-analysis > .test-page { background: radial-gradient(ellipse at 50% 0, #fff2fb 0, #fff 62%); }
+    #page-analysis .form-panel { max-width: 760px; margin: 0 auto; }
+    #page-analysis .panel-heading { padding-bottom: 17px; border-bottom: 1px solid #f1e6f4; }
+    #page-test .page-content { background: radial-gradient(ellipse at 50% 0, #fff2fb 0, #fff 62%); min-height: calc(100vh - 67px); }
+    #page-test .panel.form-panel { max-width: 700px; margin: 30px auto 0; padding: 0; overflow: hidden; }
+    #page-test .test-aside { background: linear-gradient(135deg, #fff 0%, #fff8fd 100%); border: 1px solid #ead8f0; border-radius: 16px; color: #243653; padding: 32px; box-shadow: 0 18px 48px rgba(90, 48, 108, .10); }
+    #page-test .test-aside .aside-icon { background: #fce8f7; color: #ad56c4; }
+    #page-test .test-aside h3 { color: #182b4c; font-size: 20px; margin-bottom: 10px; }
+    #page-test .test-aside p { color: #718097 !important; font-size: 13px !important; margin-bottom: 22px !important; }
+    #page-test #test-product-form { gap: 18px !important; }
+    #page-test #test-product-form label { color: #394b68 !important; gap: 8px; }
+    #page-test #test-product-form input,
+    #page-test #test-product-form textarea { background: #fff !important; border: 1px solid #dce3ed !important; color: #253958 !important; border-radius: 8px !important; padding: 12px 13px !important; font-size: 13px; }
+    #page-test #test-product-form input:focus,
+    #page-test #test-product-form textarea:focus { border-color: #c77bd7 !important; box-shadow: 0 0 0 3px #fce8f7; outline: none; }
+    #page-test #test-product-form button { background: linear-gradient(135deg, #ad56c4, #8c42a5) !important; color: #fff !important; border-radius: 8px; padding: 13px !important; box-shadow: 0 7px 16px rgba(173, 86, 196, .22); }
+    #page-test #test-product-results h4 { color: #182b4c !important; }
+    #page-test #test-product-results-content { color: #52627a !important; }
     .form-step { color: #9aa5b6; font-size: 11px; }
     .form-panel form { display: flex; flex-direction: column; gap: 17px; }
     .form-panel label { color: #394b68; font-size: 12px; font-weight: 700; display: flex; flex-direction: column; gap: 7px; }
@@ -427,7 +445,7 @@
       .page-header { align-items: flex-start; gap: 18px; flex-direction: column; }
       .header-actions { margin-top: 0; }
       .content-grid { grid-template-columns: 1fr; }
-      .test-layout { grid-template-columns: 1fr; }
+      .test-layout { grid-template-columns: minmax(0, 1fr); }
       .test-aside { order: -1; }
       .how-steps { grid-template-columns: repeat(2, 1fr); margin-bottom: 60px; }
       .value-grid { grid-template-columns: 1fr; }
