@@ -1206,7 +1206,39 @@
 
         <!-- Analysis Page -->
         <div id="page-analysis" class="hidden">
-          <div class="page-content">
+          <div class="page-content test-page">
+            <div class="page-header centered-header">
+              <div>
+                <span class="badge badge-blue">MARKET OPPORTUNITY ANALYSIS</span>
+                <h1>Market Analysis</h1>
+                <p>Enter a product idea and discover where the market opportunity may be.</p>
+              </div>
+            </div>
+            <div class="test-layout">
+              <div class="panel form-panel">
+                <div class="panel-heading">
+                  <div>
+                    <h2>Tell us about your idea</h2>
+                    <p>We'll use these details to create an illustrative analysis.</p>
+                  </div>
+                  <span class="form-step">1 of 1</span>
+                </div>
+                <form id="test-form">
+                  <label>Product name <span>Required</span><input required value="Laptop Stand" placeholder="e.g. Laptop Stand" /></label>
+                  <div class="form-row">
+                    <label>Target price <span>Required</span><input required value="₹1,500" placeholder="e.g. ₹1,500" /></label>
+                    <label>Target market <span>Required</span><input required value="India" placeholder="e.g. India" /></label>
+                  </div>
+                  <label>Product description <small>Optional</small><textarea rows="4">Portable adjustable laptop stand for students and professionals.</textarea></label>
+                  <label>Who is it for? <small>Optional</small><select><option>Students</option><option selected>Professionals</option><option>Home users</option><option>Businesses</option><option>Other</option></select></label>
+                  <label class="demo-mode-label"><input type="checkbox" id="demo-mode" checked /><span>Use saved demo data (no API credits)</span></label>
+                  <button class="button button-primary submit-button" type="submit">Analyze Product</button>
+                  <div class="loading-list hidden" id="loading-list"><span>Finding market signals...</span><span>Analyzing competition...</span><span>Identifying customer pain points...</span></div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="page-content" id="analysis-results" style="display: none;">
             <div class="page-header">
               <div>
                 <p class="eyebrow blue-text">MARKET ANALYSIS <span class="demo-label">Illustrative data</span></p>
@@ -1682,76 +1714,15 @@
 
         <!-- Test Product Page -->
         <div id="page-test" class="hidden">
-          <div class="page-content test-page">
+          <div class="page-content">
             <div class="page-header centered-header">
               <div>
-                <span class="badge badge-blue">MARKET OPPORTUNITY ANALYSIS</span>
                 <h1>Test My Product</h1>
-                <p>Enter a product idea and discover where the market opportunity may be.</p>
+                <p>Check how your product's features address market opportunities.</p>
               </div>
             </div>
-            <div class="test-layout">
-              <div class="panel form-panel">
-                <div class="panel-heading">
-                  <div>
-                    <h2>Tell us about your idea</h2>
-                    <p>We'll use these details to create an illustrative analysis.</p>
-                  </div>
-                  <span class="form-step">1 of 1</span>
-                </div>
-                <form id="test-form">
-                  <label>
-                    Product name <span>Required</span>
-                    <input required value="Laptop Stand" placeholder="e.g. Laptop Stand" />
-                  </label>
-                  <div class="form-row">
-                    <label>
-                      Target price <span>Required</span>
-                      <input required value="₹1,500" placeholder="e.g. ₹1,500" />
-                    </label>
-                    <label>
-                      Target market <span>Required</span>
-                      <input required value="India" placeholder="e.g. India" />
-                    </label>
-                  </div>
-                  <label>
-                    Product description <small>Optional</small>
-                    <textarea rows="4">Portable adjustable laptop stand for students and professionals.</textarea>
-                  </label>
-                  <label>
-                    Who is it for? <small>Optional</small>
-                    <select>
-                      <option>Students</option>
-                      <option selected>Professionals</option>
-                      <option>Home users</option>
-                      <option>Businesses</option>
-                      <option>Other</option>
-                    </select>
-                  </label>
-                  <label class="demo-mode-label">
-                    <input type="checkbox" id="demo-mode" checked />
-                    <span>Use saved demo data (no API credits)</span>
-                  </label>
-                  <button class="button button-primary submit-button" type="submit">
-                    Analyze Product
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M5 12h14"></path>
-                      <path d="m12 5 7 7-7 7"></path>
-                    </svg>
-                  </button>
-                  <div class="loading-list hidden" id="loading-list">
-                    <span>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                      </svg>
-                      Finding market signals...
-                    </span>
-                    <span>Analyzing competition...</span>
-                    <span>Identifying customer pain points...</span>
-                  </div>
-                </form>
-              </div>
-              <div class="test-aside" id="test-product-aside" style="display: none;">
+            <div class="panel form-panel">
+              <div class="test-aside" id="test-product-aside">
                 <div class="aside-icon">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M9 18h6"></path>
@@ -1781,55 +1752,6 @@
                 <div id="test-product-results" style="margin-top: 20px; display: none;">
                   <h4 style="color: #fff; font-size: 13px; margin: 0 0 12px;">Results</h4>
                   <div id="test-product-results-content" style="color: rgba(255,255,255,.88); font-size: 11px; line-height: 1.6;"></div>
-                </div>
-              </div>
-              <div class="test-aside">
-                <div class="aside-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9 18h6"></path>
-                    <path d="M10 22h4"></path>
-                    <path d="M12 2v1"></path>
-                    <path d="M12 7a5 5 0 1 0 4.546 2.916A5.4 5.4 0 0 0 12 7Z"></path>
-                  </svg>
-                </div>
-                <h3>What you'll get</h3>
-                <ul>
-                  <li>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    Demand signals in plain English
-                  </li>
-                  <li>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    Competition and price context
-                  </li>
-                  <li>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    Ranked customer pain points
-                  </li>
-                  <li>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    Practical product improvements
-                  </li>
-                  <li>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    A clear seller recommendation
-                  </li>
-                </ul>
-                <div class="aside-note">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path>
-                  </svg>
-                  <span>Your idea stays yours. This prototype uses illustrative demo data.</span>
                 </div>
               </div>
             </div>
@@ -2206,12 +2128,6 @@
         updateDashboardCards(analysisData);
       }
 
-      // Show test-product aside if analysis data exists and going to test page
-      if (pageId === 'test' && analysisData) {
-        const aside = document.getElementById('test-product-aside');
-        if (aside) aside.style.display = 'block';
-      }
-
       // Scroll to top
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -2379,6 +2295,7 @@
 
         // Populate analysis page with real data
         populateAnalysisPage(data);
+        document.getElementById('analysis-results').style.display = 'block';
 
         // Reset button state
         submitButton.disabled = false;
