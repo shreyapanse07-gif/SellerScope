@@ -14,15 +14,15 @@ HIGH_COVERAGE_THRESHOLD = 0.67
 
 def _interpretation(pain_score: float, coverage_score: float) -> str:
     if pain_score <= LOW_PAIN_THRESHOLD:
-        return "Low pain, skip"
+        return "Customers do not seem to feel this pain strongly, so this may be one to pass on."
     if (
         pain_score >= HIGH_PAIN_THRESHOLD
         and coverage_score <= LOW_COVERAGE_THRESHOLD
     ):
-        return "High pain, low competitor coverage — strong opportunity"
+        return "Customers really want this, and almost nobody offers it. That leaves a strong opening for you."
     if coverage_score >= HIGH_COVERAGE_THRESHOLD:
-        return "Pain exists but well-covered by current products"
-    return "Pain exists with some competitor coverage"
+        return "Customers feel this pain, but current products already address it well."
+    return "Customers feel this pain, and there may still be room to improve on current options."
 
 
 def compute_opportunity_scores(

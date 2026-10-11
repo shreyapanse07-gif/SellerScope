@@ -23,7 +23,7 @@ def test_splits_addressed_and_missed_opportunities():
         ],
     )
 
-    assert result["matched_features"] == ["long_battery", "wireless"]
+    assert result["matched_features"] == ["Long battery", "Wireless"]
     assert [item["theme"] for item in result["addressed_opportunities"]] == [
         "battery life",
         "wireless audio",
@@ -44,7 +44,7 @@ def test_no_matching_features_misses_every_opportunity():
     )
 
     assert result["matched_features"] == []
-    assert result["unmatched_features"] == ["waterproof"]
+    assert result["unmatched_features"] == ["Waterproof"]
     assert result["addressed_opportunities"] == []
     assert len(result["missed_opportunities"]) == 1
 
@@ -56,7 +56,7 @@ def test_fuzzy_matching_handles_typo_and_separator_variation():
         [_opportunity("battery life", ["long_battery"])],
     )
 
-    assert result["matched_features"] == ["long_battery"]
+    assert result["matched_features"] == ["Long battery"]
     assert result["unmatched_features"] == []
     assert len(result["addressed_opportunities"]) == 1
 
@@ -70,13 +70,14 @@ def test_typo_match_addresses_opportunity_by_exact_known_feature():
         [opportunity],
     )
 
-    assert result["matched_features"] == ["long_battery"]
+    assert result["matched_features"] == ["Long battery"]
     assert opportunity["addressing_features"] == ["long_battery"]
     assert result["addressed_opportunities"] == [
         {
             "theme": "short battery life",
             "opportunity_score": 0.64,
             "interpretation": "Opportunity for short battery life",
+            "addressing_features": ["Long battery"],
         }
     ]
     assert result["missed_opportunities"] == []
