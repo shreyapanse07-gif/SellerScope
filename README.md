@@ -90,3 +90,9 @@ pytest -v
 - All SerpApi and Gemini calls are cached locally (SQLite) to avoid repeat spend during development.
 - A `LIVE=false` safety flag (in `.env`) prevents accidental live API calls — set to `true` deliberately to run real analyses.
 - Error handling degrades gracefully: if an AI call fails, the app returns partial results instead of crashing.
+
+## Built with Purpose
+
+SellerScope was built to help aspiring entrepreneurs make more informed, data-driven product decisions through market research, competitor analysis, and pricing insights.
+
+Research smarter. Compete better. Build with confidence. 
