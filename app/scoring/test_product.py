@@ -6,7 +6,7 @@ import os
 
 from dotenv import load_dotenv
 from google import genai
-from pydantic import RootModel
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 from rapidfuzz import fuzz, process
 from app.serp import client as serp_client
 
@@ -18,6 +18,23 @@ MATCH_THRESHOLD = 80
 
 class SemanticFeatureMatches(RootModel[dict[str, str | None]]):
     """Validated mapping from typed feature phrases to canonical tags."""
+
+
+class OpportunityFeatureMatch(BaseModel):
+    """Validated feature-to-complaint matches for one opportunity."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    opportunity_index: int = Field(ge=0, strict=True)
+    seller_features: list[str]
+
+
+class OpportunityFeatureMatches(BaseModel):
+    """Validated response for the batched opportunity matching request."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    matches: list[OpportunityFeatureMatch]
 
 
 def _prompt_for_semantic_matches(
@@ -75,6 +92,110 @@ def _cached_semantic_matches(prompt: str) -> str:
         )
         connection.commit()
         return response_text
+
+
+def _prompt_for_opportunity_matches(
+    seller_features: list[str], opportunities: list[dict]
+) -> str:
+    complaint_rows = [
+        {
+            "opportunity_index": index,
+            "theme": opportunity["theme"],
+            "example_snippet": opportunity.get("example_snippet", ""),
+        }
+        for index, opportunity in enumerate(opportunities)
+    ]
+    return (
+        "For each specific customer complaint below, judge whether any seller "
+        "feature plausibly solves that complaint. A match must be a genuine, "
+        "direct solution, not merely a shared word or material. For example, "
+        "'good stability' can solve 'wobbly or unstable stand construction'; "
+        "'metal hinge' does not solve 'metal stand material attracting laptop "
+        "magnets' because sharing 'metal' is not enough. Return an empty list "
+        "when no seller feature directly addresses the complaint.\n\n"
+        f"Seller-typed features: {json.dumps(seller_features)}\n"
+        f"Complaints: {json.dumps(complaint_rows)}\n\n"
+        "Return ONLY JSON matching this shape, with every opportunity_index "
+        "listed exactly once and seller_features containing only exact phrases "
+        "from the supplied seller feature list:\n"
+        '{"matches": [{"opportunity_index": 0, "seller_features": '
+        '["exact seller phrase"]}]}'
+    )
+
+
+def _semantic_match_opportunities(
+    seller_features: list[str], opportunities: list[dict]
+) -> dict[int, list[str]]:
+    """Batch judge typed features against missed complaint opportunities."""
+    if not seller_features or not opportunities:
+        return {}
+
+    prompt = _prompt_for_opportunity_matches(seller_features, opportunities)
+    cache_params = {
+        "kind": "gemini_opportunity_feature_matches",
+        "model": os.getenv("GEMINI_MODEL", "models/gemini-flash-latest"),
+        "seller_features": seller_features,
+        "opportunities": [
+            {
+                "theme": item["theme"],
+                "example_snippet": item.get("example_snippet", ""),
+            }
+            for item in opportunities
+        ],
+    }
+    key = serp_client._cache_key(cache_params)
+
+    try:
+        with serp_client._cache_connection() as connection:
+            row = connection.execute(
+                "SELECT response FROM cache WHERE key = ?", (key,)
+            ).fetchone()
+            if row is not None:
+                logger.info("Opportunity feature match cache hit")
+                response_text = row[0]
+            else:
+                client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+                response = client.models.generate_content(
+                    model=os.getenv("GEMINI_MODEL", "models/gemini-flash-latest"),
+                    contents=prompt,
+                    config={
+                        "response_mime_type": "application/json",
+                        "max_output_tokens": 2048,
+                        "http_options": {"timeout": 30000},
+                    },
+                )
+                response_text = response.text
+                connection.execute(
+                    "INSERT OR REPLACE INTO cache (key, response) VALUES (?, ?)",
+                    (key, response_text),
+                )
+                connection.commit()
+
+        validated = OpportunityFeatureMatches.model_validate(
+            json.loads(response_text)
+        )
+        matches_by_index = {
+            item.opportunity_index: item.seller_features
+            for item in validated.matches
+        }
+        expected_indices = set(range(len(opportunities)))
+        if (
+            set(matches_by_index) != expected_indices
+            or len(validated.matches) != len(matches_by_index)
+            or any(
+                feature not in seller_features
+                for features in matches_by_index.values()
+                for feature in features
+            )
+        ):
+            raise ValueError("Opportunity matches did not match the supplied inputs")
+        return matches_by_index
+    except Exception as error:
+        logger.warning(
+            "Opportunity feature matching failed; preserving existing matches: %s",
+            error,
+        )
+        return {}
 
 
 def _semantic_match_features(
@@ -156,6 +277,7 @@ def match_product(
     matched_set = set(matched_features)
     addressed_opportunities = []
     missed_opportunities = []
+    missed_opportunity_sources = []
 
     for opportunity in opportunities:
         summary = {
@@ -171,6 +293,18 @@ def match_product(
             addressed_opportunities.append(summary)
         else:
             missed_opportunities.append(summary)
+            missed_opportunity_sources.append(opportunity)
+
+    complaint_matches = _semantic_match_opportunities(
+        seller_features, missed_opportunity_sources
+    )
+    remaining_missed = []
+    for index, summary in enumerate(missed_opportunities):
+        if complaint_matches.get(index):
+            addressed_opportunities.append(summary)
+        else:
+            remaining_missed.append(summary)
+    missed_opportunities = remaining_missed
 
     total = len(opportunities)
     coverage_summary = (
